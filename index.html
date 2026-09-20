@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Conoce el estado de tu vivienda</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=Public+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   TOKENS  — un solo lugar para cambiar la identidad visual
+   ============================================================ */
+:root{
+  --papel:#F2F3F1;
+  --blanco:#FFFFFF;
+  --tinta:#171B19;
+  --tinta-2:#5C6561;
+  --linea:#D6DAD6;
+  --linea-2:#B9BFBA;
+  --verde:#2E7D5B;
+  --verde-claro:#E3F0E9;
+  --ambar:#B87503;
+  --ambar-claro:#FBEEDA;
+  --rojo:#C33A26;
+  --rojo-claro:#FBE4E0;
+  --foco:#2D5FA8;
+  --radio:4px;
+  --max:660px;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+  color-scheme:light;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-padding-top:90px}
+body{
+  margin:0;background:var(--papel);color:var(--tinta);
+  font-family:"Public Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  font-size:18px;line-height:1.55;
+}
+h1,h2,h3{font-family:"Archivo","Public Sans",sans-serif;margin:0;line-height:1.12;letter-spacing:-.02em}
+h1{font-weight:800;font-size:clamp(1.9rem,6vw,2.6rem)}
+h2{font-weight:700;font-size:clamp(1.45rem,4.6vw,1.9rem)}
+h3{font-weight:700;font-size:1.1rem}
+p{margin:0 0 1rem}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 20px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}
+
+/* ---------- encabezado y progreso ---------- */
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:30;background:var(--papel);border-bottom:1px solid var(--linea)}
+.bar{display:flex;align-items:center;gap:12px;height:60px}
+.marca{display:flex;align-items:center;gap:9px;font-family:"Archivo";font-weight:800;font-size:1.05rem;letter-spacing:-.03em}
+.paso-nota{margin-left:auto;font-size:.9rem;color:var(--tinta-2);font-weight:600}
+.progreso{height:5px;background:var(--linea)}
+.progreso i{display:block;height:100%;width:0;background:var(--verde);transition:width .35s ease}
+
+/* ---------- pantallas ---------- */
+.pantalla{display:none;padding:34px 0 48px}
+.pantalla.activa{display:block}
+@media(prefers-reduced-motion:no-preference){.pantalla.activa{animation:entra .22s ease-out}}
+@keyframes entra{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* ---------- botones ---------- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;width:100%;
+  min-height:58px;padding:14px 22px;border-radius:var(--radio);border:2px solid var(--tinta);
+  background:var(--tinta);color:var(--blanco);font:700 1.05rem/1.2 "Public Sans",sans-serif;
+  cursor:pointer;text-align:center;text-decoration:none}
+.btn:hover{background:#000;border-color:#000}
+.btn.sec{background:transparent;color:var(--tinta);border-color:var(--linea-2)}
+.btn.sec:hover{background:var(--blanco);border-color:var(--tinta)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,.opcion input:focus-visible+span{
+  outline:3px solid var(--foco);outline-offset:2px}
+.navegacion{display:flex;gap:12px;margin-top:34px}
+.navegacion .btn{width:auto;flex:1}
+.navegacion .btn.atras{flex:0 0 34%}
+
+/* ---------- preguntas ---------- */
+.pregunta{background:var(--blanco);border:1px solid var(--linea);border-radius:var(--radio);
+  padding:20px;margin-bottom:16px}
+.pregunta > .q{display:block;font-weight:700;font-size:1.06rem;margin-bottom:4px}
+.pregunta > .ayuda{display:block;color:var(--tinta-2);font-size:.95rem;margin-bottom:14px}
+.opciones{display:flex;flex-direction:column;gap:10px}
+.opciones.fila{flex-direction:row;flex-wrap:wrap}
+.opcion{position:relative;flex:1 1 auto}
+.opcion input{position:absolute;opacity:0;width:100%;height:100%;left:0;top:0;margin:0;cursor:pointer}
+.opcion span{display:flex;align-items:center;gap:12px;min-height:54px;padding:12px 16px;
+  border:2px solid var(--linea);border-radius:var(--radio);cursor:pointer;font-weight:600;
+  background:var(--blanco);transition:border-color .12s,background .12s}
+.opcion input:checked+span{border-color:var(--tinta);background:#F7F8F7}
+.opcion input:checked+span::before{content:"";width:12px;height:12px;border-radius:50%;background:var(--tinta);flex:0 0 12px}
+.opcion input:not(:checked)+span::before{content:"";width:12px;height:12px;border-radius:50%;box-shadow:inset 0 0 0 2px var(--linea-2);flex:0 0 12px}
+label.campo{display:block;font-weight:700;margin-bottom:8px}
+select,input[type=text],input[type=number],textarea{width:100%;background:var(--blanco);
+  border:2px solid var(--linea);color:var(--tinta);font:inherit;font-size:1rem;
+  padding:14px 14px;border-radius:var(--radio);min-height:54px}
+textarea{min-height:96px;resize:vertical}
+.par{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:520px){.par{grid-template-columns:1fr}}
+
+/* ---------- avisos ---------- */
+.aviso{display:flex;gap:12px;align-items:flex-start;border-radius:var(--radio);
+  padding:16px 18px;font-size:.96rem;margin:22px 0}
+.aviso.rojo{background:var(--rojo-claro);border-left:5px solid var(--rojo)}
+.aviso.neutro{background:var(--blanco);border:1px solid var(--linea)}
+.aviso b{font-weight:700}
+.nota{color:var(--tinta-2);font-size:.92rem}
+
+/* ---------- pasos "cómo funciona" ---------- */
+.pasos{list-style:none;padding:0;margin:26px 0 0;counter-reset:p}
+.pasos li{counter-increment:p;display:flex;gap:16px;padding:18px 0;border-top:1px solid var(--linea)}
+.pasos li::before{content:counter(p);font-family:"Archivo";font-weight:800;font-size:1.35rem;
+  width:44px;height:44px;flex:0 0 44px;display:flex;align-items:center;justify-content:center;
+  background:var(--blanco);border:2px solid var(--tinta);border-radius:50%}
+.pasos b{display:block}
+.pasos span{color:var(--tinta-2);font-size:.95rem}
+
+/* ---------- fotos ---------- */
+.zona-foto{background:var(--blanco);border:2px dashed var(--linea-2);border-radius:var(--radio);
+  padding:26px 20px;text-align:center}
+.foto{display:flex;gap:14px;align-items:flex-start;background:var(--blanco);
+  border:1px solid var(--linea);border-radius:var(--radio);padding:14px;margin-top:14px}
+.foto img{width:88px;height:88px;object-fit:cover;border-radius:var(--radio);flex:0 0 88px}
+.foto .cuerpo{flex:1;min-width:0}
+.foto select{min-height:46px;padding:8px 10px;font-size:.95rem;margin-top:8px}
+.foto button{margin-top:8px;background:none;border:none;color:var(--rojo);font:600 .92rem "Public Sans";
+  cursor:pointer;padding:6px 0;text-decoration:underline}
+
+/* ---------- resultado ---------- */
+.resultado{border-radius:var(--radio);overflow:hidden;border:1px solid var(--linea);background:var(--blanco)}
+.resultado .cabeza{padding:24px 22px;display:flex;gap:16px;align-items:flex-start}
+.resultado .cabeza h2{font-size:1.5rem}
+.resultado .cabeza .ico{flex:0 0 42px}
+.r-verde .cabeza{background:var(--verde-claro);border-bottom:4px solid var(--verde)}
+.r-ambar .cabeza{background:var(--ambar-claro);border-bottom:4px solid var(--ambar)}
+.r-rojo .cabeza{background:var(--rojo-claro);border-bottom:4px solid var(--rojo)}
+.resultado .cuerpo{padding:22px}
+.senales{list-style:none;padding:0;margin:0}
+.senales li{display:flex;gap:12px;padding:12px 0;border-top:1px solid var(--linea);font-size:.98rem}
+.senales li:first-child{border-top:none}
+.pt{width:11px;height:11px;border-radius:2px;flex:0 0 11px;margin-top:7px}
+.pt.alta{background:var(--rojo)}.pt.media{background:var(--ambar)}.pt.ctx{background:var(--linea-2)}
+.recomendaciones{list-style:none;padding:0;margin:14px 0 0;counter-reset:r}
+.recomendaciones li{counter-increment:r;display:flex;gap:14px;padding:12px 0;border-top:1px solid var(--linea)}
+.recomendaciones li::before{content:counter(r);font-weight:700;font-family:"Archivo";
+  width:28px;height:28px;flex:0 0 28px;display:flex;align-items:center;justify-content:center;
+  border:2px solid var(--tinta);border-radius:50%;font-size:.9rem}
+
+/* ---------- resumen del reporte ---------- */
+.resumen{background:var(--blanco);border:1px solid var(--linea);border-radius:var(--radio);padding:4px 20px}
+.resumen dl{margin:0}
+.resumen div{display:flex;gap:14px;padding:13px 0;border-top:1px solid var(--linea);font-size:.97rem}
+.resumen div:first-child{border-top:none}
+.resumen dt{flex:0 0 42%;color:var(--tinta-2);margin:0}
+.resumen dd{margin:0;font-weight:600}
+.folio{font-family:"Archivo";font-weight:800;font-size:1.5rem;letter-spacing:.04em}
+
+/* ---------- mapa (segunda etapa) ---------- */
+.valle{width:100%;height:auto;border:1px solid var(--linea);background:var(--blanco);border-radius:var(--radio);display:block;margin-top:14px}
+.zona{fill:#E7EAE7;stroke:var(--linea-2);stroke-width:1}
+.zona.hot{fill:#DCE4DE}
+.rio{stroke:#BFD0D6;stroke-width:6;fill:none;stroke-linecap:round}
+.etq{fill:#6C7570;font-size:9px;font-family:"Public Sans",sans-serif}
+footer{border-top:1px solid var(--linea);padding:30px 0 48px;color:var(--tinta-2);font-size:.9rem}
+footer b{color:var(--tinta)}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap bar">
+    <div class="marca">
+      <svg width="15" height="24" viewBox="0 0 16 26" aria-hidden="true"><line x1="8" y1="0" x2="8" y2="15" stroke="#5C6561" stroke-width="1.6"/><path d="M8 15 L13 19 L8 26 L3 19 Z" fill="#171B19"/></svg>
+      Plomada
+    </div>
+    <span class="paso-nota" id="paso-nota"></span>
+  </div>
+  <div class="progreso"><i id="barra"></i></div>
+</header>
+
+<main class="wrap">
+
+<!-- ============ INICIO ============ -->
+<section class="pantalla activa" id="p-inicio">
+  <h1>Conoce el estado de tu vivienda</h1>
+  <p style="margin-top:18px;font-size:1.08rem">Reporta grietas, daños o señales que te preocupen y recibe una orientación inicial sobre qué hacer.</p>
+  <div style="display:flex;flex-direction:column;gap:12px;margin-top:28px">
+    <button class="btn" data-ir="p1">Revisar mi vivienda</button>
+    <button class="btn sec" data-ir="como">¿Cómo funciona?</button>
+  </div>
+  <div class="aviso rojo" style="margin-top:30px">
+    <div><b>Si en este momento hay peligro</b> — material cayéndose, muros inclinándose, olor a gas — sal del lugar y llama al <b>123</b>. Esta página es para revisar con calma.</div>
+  </div>
+</section>
+
+<!-- ============ CÓMO FUNCIONA ============ -->
+<section class="pantalla" id="p-como">
+  <h2>¿Cómo funciona?</h2>
+  <ol class="pasos">
+    <li><div><b>Cuéntanos sobre tu vivienda</b><span>Unas pocas preguntas sobre cómo y cuándo fue construida.</span></div></li>
+    <li><div><b>Sube fotos de las zonas que te preocupan</b><span>Puedes subir varias y decir qué aparece en cada una.</span></div></li>
+    <li><div><b>Recibe una orientación inicial</b><span>Te decimos qué señales encontramos y qué conviene hacer.</span></div></li>
+  </ol>
+  <div class="aviso neutro">
+    <div>Esto es una <b>orientación preliminar</b>, no un diagnóstico. Una fotografía no permite certificar si una vivienda cumple la norma NSR‑10 ni si es segura: eso requiere la visita de un profesional.</div>
+  </div>
+  <div class="navegacion">
+    <button class="btn sec atras" data-ir="inicio">Atrás</button>
+    <button class="btn" data-ir="p1">Empezar</button>
+  </div>
+</section>
+
+<!-- ============ PASO 1 ============ -->
+<section class="pantalla" id="p-p1">
+  <h2>Tu vivienda</h2>
+  <p class="nota" style="margin-top:10px">Si no sabes alguna respuesta, elige “No sé”. No pasa nada.</p>
+
+  <div class="pregunta" style="margin-top:22px">
+    <span class="q">¿Fue construida antes de 1984?</span>
+    <span class="ayuda">Las primeras normas sismorresistentes del país son de 1984.</span>
+    <div class="opciones fila">
+      <label class="opcion"><input type="radio" name="antes84" value="si"><span>Sí</span></label>
+      <label class="opcion"><input type="radio" name="antes84" value="no"><span>No</span></label>
+      <label class="opcion"><input type="radio" name="antes84" value="nose" checked><span>No sé</span></label>
+    </div>
+  </div>
+
+  <div class="pregunta">
+    <span class="q">¿Participó un arquitecto o ingeniero en la construcción?</span>
+    <div class="opciones fila">
+      <label class="opcion"><input type="radio" name="profesional" value="si"><span>Sí</span></label>
+      <label class="opcion"><input type="radio" name="profesional" value="no"><span>No</span></label>
+      <label class="opcion"><input type="radio" name="profesional" value="nose" checked><span>No sé</span></label>
+    </div>
+  </div>
+
+  <div class="pregunta">
+    <span class="q">¿Dónde queda?</span>
+    <div class="par" style="margin-top:12px">
+      <div><label class="campo" for="comuna">Comuna o corregimiento</label><select id="comuna"></select></div>
+      <div><label class="campo" for="barrio">Barrio</label><select id="barrio"></select></div>
+    </div>
+    <div id="barrio-otro-caja" style="display:none;margin-top:14px">
+      <label class="campo" for="barrio-otro">Escribe el nombre del barrio o sector</label>
+      <input type="text" id="barrio-otro" placeholder="Ej.: parte alta de El Pacífico">
+    </div>
+  </div>
+
+  <div class="pregunta">
+    <span class="q">¿De qué material está construida principalmente?</span>
+    <div class="opciones">
+      <label class="opcion"><input type="radio" name="material" value="Ladrillo o mampostería" checked><span>Ladrillo o mampostería</span></label>
+      <label class="opcion"><input type="radio" name="material" value="Concreto"><span>Concreto</span></label>
+      <label class="opcion"><input type="radio" name="material" value="Bahareque"><span>Bahareque</span></label>
+      <label class="opcion"><input type="radio" name="material" value="Guadua"><span>Guadua</span></label>
+      <label class="opcion"><input type="radio" name="material" value="Madera"><span>Madera</span></label>
+      <label class="opcion"><input type="radio" name="material" value="Otro"><span>Otro</span></label>
+      <label class="opcion"><input type="radio" name="material" value="No sé"><span>No sé</span></label>
+    </div>
+  </div>
+
+  <div class="pregunta">
+    <label class="campo" for="anio">Año aproximado de construcción <span style="font-weight:400;color:var(--tinta-2)">(si lo conoces)</span></label>
+    <input type="number" id="anio" inputmode="numeric" min="1850" max="2026" placeholder="Ej.: 1995">
+  </div>
+
+  <div class="navegacion">
+    <button class="btn sec atras" data-ir="inicio">Atrás</button>
+    <button class="btn" data-ir="p2">Continuar</button>
+  </div>
+</section>
+
+<!-- ============ PASO 2 ============ -->
+<section class="pantalla" id="p-p2">
+  <h2>Posibles daños</h2>
+  <p class="nota" style="margin-top:10px">Responde pensando en lo que ves hoy en la vivienda.</p>
+
+  <div class="pregunta" style="margin-top:22px">
+    <span class="q">¿Has encontrado grietas o fisuras?</span>
+    <div class="opciones fila">
+      <label class="opcion"><input type="radio" name="grietas" value="si"><span>Sí</span></label>
+      <label class="opcion"><input type="radio" name="grietas" value="no" checked><span>No</span></label>
+      <label class="opcion"><input type="radio" name="grietas" value="nose"><span>No sé</span></label>
+    </div>
+  </div>
+
+  <div id="detalle-grietas" style="display:none">
+    <div class="pregunta">
+      <span class="q">¿Dónde están?</span>
+      <span class="ayuda">Puedes marcar varias.</span>
+      <div class="opciones">
+        <label class="opcion"><input type="checkbox" name="donde" value="muro"><span>En un muro</span></label>
+        <label class="opcion"><input type="checkbox" name="donde" value="columna"><span>En una columna</span></label>
+        <label class="opcion"><input type="checkbox" name="donde" value="viga"><span>En una viga</span></label>
+        <label class="opcion"><input type="checkbox" name="donde" value="techo"><span>En el techo o la losa</span></label>
+        <label class="opcion"><input type="checkbox" name="donde" value="fachada"><span>En la fachada</span></label>
+        <label class="opcion"><input type="checkbox" name="donde" value="piso"><span>En el piso</span></label>
+        <label class="opcion"><input type="checkbox" name="donde" value="cimentacion"><span>En la base o cimentación</span></label>
+        <label class="opcion"><input type="checkbox" name="donde" value="otro"><span>En otra parte</span></label>
+      </div>
+    </div>
+    <div class="pregunta">
+      <span class="q">¿Aparecieron hace poco?</span>
+      <div class="opciones fila">
+        <label class="opcion"><input type="radio" name="recientes" value="si"><span>Sí</span></label>
+        <label class="opcion"><input type="radio" name="recientes" value="no"><span>No</span></label>
+        <label class="opcion"><input type="radio" name="recientes" value="nose" checked><span>No sé</span></label>
+      </div>
+    </div>
+    <div class="pregunta">
+      <span class="q">¿Han aumentado con el tiempo?</span>
+      <div class="opciones fila">
+        <label class="opcion"><input type="radio" name="aumentan" value="si"><span>Sí</span></label>
+        <label class="opcion"><input type="radio" name="aumentan" value="no"><span>No</span></label>
+        <label class="opcion"><input type="radio" name="aumentan" value="nose" checked><span>No sé</span></label>
+      </div>
+    </div>
+    <div class="pregunta">
+      <span class="q">¿Aparecieron después de un sismo?</span>
+      <div class="opciones fila">
+        <label class="opcion"><input type="radio" name="sismo" value="si"><span>Sí</span></label>
+        <label class="opcion"><input type="radio" name="sismo" value="no"><span>No</span></label>
+        <label class="opcion"><input type="radio" name="sismo" value="nose" checked><span>No sé</span></label>
+      </div>
+    </div>
+  </div>
+
+  <div class="pregunta">
+    <span class="q">¿Hay partes inclinadas o hundimientos?</span>
+    <span class="ayuda">Muros que se salieron de plomo, pisos hundidos, puertas que dejaron de cerrar.</span>
+    <div class="opciones fila">
+      <label class="opcion"><input type="radio" name="inclinado" value="si"><span>Sí</span></label>
+      <label class="opcion"><input type="radio" name="inclinado" value="no" checked><span>No</span></label>
+      <label class="opcion"><input type="radio" name="inclinado" value="nose"><span>No sé</span></label>
+    </div>
+  </div>
+
+  <div class="pregunta">
+    <span class="q">¿Se han desprendido partes del muro, el techo o la fachada?</span>
+    <div class="opciones fila">
+      <label class="opcion"><input type="radio" name="desprende" value="si"><span>Sí</span></label>
+      <label class="opcion"><input type="radio" name="desprende" value="no" checked><span>No</span></label>
+      <label class="opcion"><input type="radio" name="desprende" value="nose"><span>No sé</span></label>
+    </div>
+  </div>
+
+  <div class="pregunta">
+    <span class="q">¿La vivienda ha sido ampliada o se le han agregado pisos?</span>
+    <div class="opciones fila">
+      <label class="opcion"><input type="radio" name="ampliada" value="si"><span>Sí</span></label>
+      <label class="opcion"><input type="radio" name="ampliada" value="no" checked><span>No</span></label>
+      <label class="opcion"><input type="radio" name="ampliada" value="nose"><span>No sé</span></label>
+    </div>
+  </div>
+
+  <div class="pregunta">
+    <span class="q">¿Hay filtraciones de agua importantes?</span>
+    <span class="ayuda">Humedad permanente, mangueras rotas o agua corriendo cerca de la base.</span>
+    <div class="opciones fila">
+      <label class="opcion"><input type="radio" name="agua" value="si"><span>Sí</span></label>
+      <label class="opcion"><input type="radio" name="agua" value="no" checked><span>No</span></label>
+      <label class="opcion"><input type="radio" name="agua" value="nose"><span>No sé</span></label>
+    </div>
+  </div>
+
+  <div class="navegacion">
+    <button class="btn sec atras" data-ir="p1">Atrás</button>
+    <button class="btn" data-ir="p3">Continuar</button>
+  </div>
+</section>
+
+<!-- ============ PASO 3 ============ -->
+<section class="pantalla" id="p-p3">
+  <h2>Fotografías</h2>
+  <p style="margin-top:10px">Las fotos ayudan a que un profesional entienda el caso sin tener que ir primero. Puedes continuar sin subir ninguna.</p>
+
+  <div class="aviso neutro">
+    <div><b>Para que la foto sirva:</b> con buena luz, primero una foto de toda la zona y después una de cerca del daño. Evita que salga movida.</div>
+  </div>
+
+  <div class="zona-foto">
+    <label class="btn sec" for="entrada-fotos" style="width:auto;display:inline-flex">Tomar o subir foto</label>
+    <input id="entrada-fotos" type="file" accept="image/*" capture="environment" multiple hidden>
+    <p class="nota" style="margin:14px 0 0">Hasta 6 fotos.</p>
+  </div>
+  <div id="lista-fotos"></div>
+
+  <div class="navegacion">
+    <button class="btn sec atras" data-ir="p2">Atrás</button>
+    <button class="btn" data-ir="p4">Ver mi resultado</button>
+  </div>
+</section>
+
+<!-- ============ PASO 4 ============ -->
+<section class="pantalla" id="p-p4">
+  <h2>Resultado preliminar</h2>
+  <div id="caja-resultado" style="margin-top:20px"></div>
+
+  <div class="aviso neutro" style="margin-top:26px">
+    <div><b>Sobre la NSR‑10.</b> Es el reglamento colombiano que establece los requisitos de diseño y construcción sismorresistente. Este formulario <b>no certifica</b> que tu vivienda cumpla la NSR‑10: una evaluación técnica requiere información y revisión especializada, incluida la que no se ve en una foto.</div>
+  </div>
+
+  <div class="navegacion">
+    <button class="btn sec atras" data-ir="p3">Atrás</button>
+    <button class="btn" data-ir="p5">Guardar mi reporte</button>
+  </div>
+</section>
+
+<!-- ============ PASO 5 ============ -->
+<section class="pantalla" id="p-p5">
+  <h2>Tu reporte</h2>
+  <p style="margin-top:10px">Revisa que esté bien antes de guardarlo.</p>
+  <div class="resumen" id="resumen" style="margin-top:18px"></div>
+
+  <div class="pregunta" style="margin-top:16px">
+    <label class="campo" for="comentario">¿Quieres agregar algo? <span style="font-weight:400;color:var(--tinta-2)">(opcional)</span></label>
+    <textarea id="comentario" placeholder="Ej.: la grieta se abrió más después del temblor de agosto."></textarea>
+  </div>
+
+  <p class="nota">Se guarda la comuna y el barrio, no tu dirección exacta.</p>
+
+  <div class="navegacion">
+    <button class="btn sec atras" data-ir="p4">Atrás</button>
+    <button class="btn" id="guardar">Guardar reporte</button>
+  </div>
+  <p class="nota" id="estado-guardado" style="margin-top:14px"></p>
+</section>
+
+<!-- ============ FINAL ============ -->
+<section class="pantalla" id="p-final">
+  <h2>Reporte guardado</h2>
+  <p style="margin-top:10px">Número de reporte:</p>
+  <p class="folio" id="folio">—</p>
+  <p>Guárdalo. Sirve para hacer seguimiento si más adelante pides una visita técnica.</p>
+
+  <h3 style="margin-top:34px">Segunda etapa: mapa de alertas</h3>
+  <p class="nota" style="margin-top:8px">Así se vería el conjunto de reportes cuando la plataforma tenga base de datos compartida. En esta vista de revisión solo se muestran los reportes que guardes tú en esta pantalla; el municipio podría priorizar visitas técnicas donde se junten varios.</p>
+  <svg class="valle" viewBox="0 0 520 330" role="img" aria-label="Mapa esquemático del valle de Aburrá con las zonas de ladera y los reportes">
+    <path class="zona" id="z-nororiente" d="M300 18 L470 30 L500 120 L360 110 L310 60 Z"/>
+    <path class="zona" id="z-centrooriente" d="M360 110 L500 120 L505 215 L370 200 Z"/>
+    <path class="zona" id="z-suroriente" d="M370 200 L505 215 L480 310 L360 275 Z"/>
+    <path class="zona" id="z-noroccidente" d="M40 40 L200 22 L240 80 L215 130 L60 120 Z"/>
+    <path class="zona" id="z-centroccidente" d="M60 120 L215 130 L230 215 L70 205 Z"/>
+    <path class="zona" id="z-suroccidente" d="M70 205 L230 215 L215 305 L95 295 Z"/>
+    <path class="rio" d="M262 8 C 276 90, 268 170, 284 322"/>
+    <text class="etq" x="322" y="52">Nororiente · C1, C2, C3, C4</text>
+    <text class="etq" x="380" y="160">Centrooriente · C8, C9, C10</text>
+    <text class="etq" x="386" y="252">Suroriente · C14</text>
+    <text class="etq" x="66" y="62">Noroccidente · C5, C6, C7</text>
+    <text class="etq" x="76" y="168">Centroccidente · C11, C12, C13</text>
+    <text class="etq" x="96" y="258">Suroccidente · C15, C16</text>
+    <g id="pines"></g>
+  </svg>
+  <p class="nota" id="conteo-reportes"></p>
+
+  <div class="navegacion">
+    <button class="btn sec" data-ir="inicio">Revisar otra vivienda</button>
+  </div>
+</section>
+
+</main>
+
+<footer class="wrap">
+  <p><b>Esta plataforma no emite diagnósticos estructurales.</b> Entrega una orientación preliminar a partir de lo que respondes y de las fotos que subes. Cuando el resultado señale posibles daños graves, lo que corresponde es alejarse del área si hay peligro inmediato y buscar evaluación profesional o contactar a la autoridad competente. Emergencias: <b>123</b>.</p>
+  <p style="margin:0">Prototipo académico · proyecto de innovación en control preventivo del riesgo sismorresistente, Medellín.</p>
+</footer>
+
+<script>
+(function(){
+"use strict";
+
+/* ============================================================
+   1. DATOS  (en la versión con backend esto viene de Python)
+   ============================================================ */
+var LUGARES = {
+  "Comuna 1 · Popular":["Santo Domingo Savio","Popular","Granizal","Moscú No. 2","Villa Guadalupe","Carpinelo","La Esperanza No. 2","San Pablo"],
+  "Comuna 2 · Santa Cruz":["Santa Cruz","La Isla","La Rosa","Moscú No. 1","Villa del Socorro","Playón de los Comuneros","Andalucía"],
+  "Comuna 3 · Manrique":["Manrique Central","Versalles","La Salle","Campo Valdés No. 2","Santa Inés","El Raizal","San Blas","La Cruz","Oriente"],
+  "Comuna 4 · Aranjuez":["Aranjuez","Berlín","Campo Valdés No. 1","Las Esmeraldas","Moravia","Palermo","San Isidro","Brasilia"],
+  "Comuna 5 · Castilla":["Castilla","Belalcázar","Girardot","Tricentenario","Florencia","Toscana","Boyacá","Alfonso López","Caribe"],
+  "Comuna 6 · Doce de Octubre":["Doce de Octubre","Pedregal","Santander","Kennedy","El Picacho","Picachito","Mirador del Doce","El Progreso","San Martín de Porres"],
+  "Comuna 7 · Robledo":["Robledo","Aures","Bello Horizonte","Córdoba","López de Mesa","El Diamante","Villa Flora","Pajarito","Olaya Herrera","El Cucaracho"],
+  "Comuna 8 · Villa Hermosa":["Villa Hermosa","La Ladera","Enciso","Sucre","Los Mangos","Llanaditas","Trece de Noviembre","Villatina","La Libertad","El Pinal"],
+  "Comuna 9 · Buenos Aires":["Buenos Aires","Miraflores","Loreto","La Asomadera","Barrio Caicedo","Gerona","La Milagrosa","Cataluña"],
+  "Comuna 10 · La Candelaria":["La Candelaria","Prado","Boston","Villanueva","San Benito","Guayaquil","Corazón de Jesús","Perpetuo Socorro","San Diego"],
+  "Comuna 11 · Laureles-Estadio":["Laureles","Conquistadores","Bolivariana","Estadio","Suramericana","Florida Nueva","Los Colores","Carlos E. Restrepo"],
+  "Comuna 12 · La América":["La América","Santa Mónica","Calasanz","Barrio Cristóbal","Simón Bolívar","Santa Lucía","Ferrini","Campo Alegre"],
+  "Comuna 13 · San Javier":["San Javier","Veinte de Julio","El Salado","Betania","Las Independencias","Nuevos Conquistadores","El Socorro","Antonio Nariño","Belencito","Juan XXIII"],
+  "Comuna 14 · El Poblado":["El Poblado","Manila","Astorga","Patio Bonito","Castropol","Provenza","Los Balsos","El Tesoro","Las Lomas","Santa María de los Ángeles"],
+  "Comuna 15 · Guayabal":["Guayabal","Campo Amor","Cristo Rey","Santa Fe","Tenche","La Colina","Trinidad"],
+  "Comuna 16 · Belén":["Belén","Rosales","Fátima","Granada","La Palma","Las Violetas","Loma de los Bernal","La Mota","Zafra","El Rincón","Las Mercedes"],
+  "Corregimiento · San Cristóbal":["San Cristóbal","El Llano","La Loma","Pajarito","Travesías","Boquerón"],
+  "Corregimiento · Altavista":["Altavista","San José del Manzanillo","Aguas Frías","Buga Patio Bonito","El Corazón"],
+  "Corregimiento · San Antonio de Prado":["San Antonio de Prado","El Limonar","Potrerito","La Verde","Montañita"],
+  "Corregimiento · Santa Elena":["Santa Elena","Media Luna","El Placer","Piedras Blancas","Mazo"],
+  "Corregimiento · San Sebastián de Palmitas":["Palmitas","La Aldea","La Suiza","Urquitá","La Frisola"]
+};
+/* comuna -> zona del mapa de la segunda etapa */
+var ZONA_DE = {"1":"z-nororiente","2":"z-nororiente","3":"z-nororiente","4":"z-nororiente",
+  "5":"z-noroccidente","6":"z-noroccidente","7":"z-noroccidente",
+  "8":"z-centrooriente","9":"z-centrooriente","10":"z-centrooriente",
+  "11":"z-centroccidente","12":"z-centroccidente","13":"z-centroccidente",
+  "14":"z-suroriente","15":"z-suroccidente","16":"z-suroccidente"};
+var CENTRO_ZONA = {"z-nororiente":{x:400,y:70},"z-centrooriente":{x:435,y:158},"z-suroriente":{x:425,y:248},
+  "z-noroccidente":{x:135,y:75},"z-centroccidente":{x:145,y:170},"z-suroccidente":{x:155,y:255}};
+
+/* ============================================================
+   2. MOTOR DE ORIENTACIÓN  (función pura: entra el formulario,
+      salen nivel + señales. Es lo que se porta tal cual a Python)
+   ============================================================ */
+var NOMBRE_LUGAR = {muro:"un muro",columna:"una columna",viga:"una viga",techo:"el techo o la losa",
+  fachada:"la fachada",piso:"el piso",cimentacion:"la base o cimentación",otro:"otra parte"};
+
+function evaluar(d){
+  var altas = [], medias = [], contexto = [];
+
+  /* --- señales potencialmente graves --- */
+  if(d.desprende === "si") altas.push("Se han desprendido partes del muro, el techo o la fachada.");
+  if(d.inclinado === "si") altas.push("Hay partes inclinadas o hundimientos.");
+  if(d.grietas === "si"){
+    ["columna","viga","cimentacion"].forEach(function(k){
+      if(d.donde.indexOf(k) >= 0) altas.push("Hay grietas en " + NOMBRE_LUGAR[k] + ", que es parte de lo que sostiene la vivienda.");
+    });
+    if(d.aumentan === "si") altas.push("Las grietas han aumentado con el tiempo.");
+  }
+
+  /* --- señales que deberían revisarse --- */
+  if(d.grietas === "si"){
+    ["muro","techo","fachada","piso","otro"].forEach(function(k){
+      if(d.donde.indexOf(k) >= 0) medias.push("Hay grietas en " + NOMBRE_LUGAR[k] + ".");
+    });
+    if(d.sismo === "si") medias.push("Las grietas aparecieron después de un sismo.");
+    if(d.recientes === "si") medias.push("Las grietas aparecieron hace poco.");
+  }
+  if(d.grietas === "nose") medias.push("No se sabe si hay grietas: conviene revisar muros, columnas y techo con luz.");
+  if(d.ampliada === "si") medias.push("La vivienda fue ampliada o se le agregaron pisos.");
+  if(d.agua === "si") medias.push("Hay filtraciones de agua importantes.");
+  if(d.desprende === "nose" || d.inclinado === "nose") medias.push("Queda por verificar si hay desprendimientos o partes inclinadas.");
+
+  /* --- contexto: no define el nivel por sí solo --- */
+  if(d.antes84 === "si") contexto.push("Construida antes de 1984, cuando no existían normas sismorresistentes en el país.");
+  if(d.profesional === "no") contexto.push("Construida sin participación de arquitecto o ingeniero.");
+  if(d.profesional === "nose") contexto.push("No se sabe si participó un arquitecto o ingeniero.");
+  if(d.material === "Ladrillo o mampostería") contexto.push("Construida en ladrillo o mampostería, el material más común en la autoconstrucción de la ciudad.");
+
+  var nivel = altas.length ? "rojo" : (medias.length ? "ambar" : "verde");
+  return {nivel:nivel, altas:altas, medias:medias, contexto:contexto};
+}
+
+var TEXTOS = {
+  verde:{
+    titulo:"Sin señales evidentes de alerta",
+    resumen:"Con la información suministrada no aparecen señales de daño. Esto no significa que la vivienda cumpla la NSR‑10 ni que sea segura ante un sismo fuerte: solo que hoy no se ven señales visibles.",
+    recomendaciones:[
+      "Revisa cada cierto tiempo muros, columnas, techo y fachada, sobre todo después de un temblor o de un aguacero fuerte.",
+      "Si en algún momento aparece una grieta, tómale foto con algo al lado que dé la escala y vuelve a hacer esta revisión.",
+      "Antes de agregar un piso o un cuarto, consulta con un ingeniero: ampliar sin diseño es una de las causas más comunes de colapso en laderas.",
+      "Ten claro con tu familia por dónde salir y dónde encontrarse si hay un sismo."
+    ]},
+  ambar:{
+    titulo:"Hay señales que deberían ser revisadas por un profesional",
+    resumen:"Lo que describes no indica necesariamente un peligro inmediato, pero sí merece que alguien con formación técnica lo mire de cerca. Una grieta puede ser solo del revoque o puede ser el aviso de algo más.",
+    recomendaciones:[
+      "Busca la revisión de un ingeniero civil o estructural, o pide orientación en tu junta de acción comunal o en el DAGRD.",
+      "Marca con lápiz los extremos de cada grieta y ponles la fecha. Si en unas semanas creció, ya es otro asunto.",
+      "No cargues más la vivienda: nada de materiales, tanques o pisos nuevos mientras no la revisen.",
+      "Si hay filtraciones de agua, repáralas cuanto antes: el agua infiltrada debilita el terreno bajo la casa.",
+      "Guarda este reporte y las fotos para mostrárselos a quien venga a revisar."
+    ]},
+  rojo:{
+    titulo:"Hay señales potencialmente graves",
+    resumen:"Algunas de las señales que describes son de las que comprometen lo que sostiene la vivienda. No es un diagnóstico, pero sí razón suficiente para priorizar la seguridad de quienes viven ahí y buscar evaluación profesional pronto.",
+    recomendaciones:[
+      "Si sientes peligro inmediato, sal del lugar y llama al 123.",
+      "Mientras tanto, no uses ni duermas en las zonas afectadas y aléjate de fachadas, antepechos y techos que puedan desprenderse.",
+      "Reporta el caso al DAGRD o a la autoridad local para pedir visita técnica.",
+      "No hagas reparaciones por encima (tapar la grieta con cemento o pintura) antes de que un profesional la vea: eso esconde el problema.",
+      "Saca de las zonas afectadas lo pesado que puedas mover y ten lista una ruta de salida."
+    ]}
+};
+
+/* ============================================================
+   3. ESTADO Y NAVEGACIÓN
+   ============================================================ */
+var ORDEN = ["p1","p2","p3","p4","p5"];
+var fotos = [];
+var ultimaEvaluacion = null;
+var datosActuales = null;
+
+function ir(id){
+  document.querySelectorAll(".pantalla").forEach(function(s){ s.classList.remove("activa"); });
+  var el = document.getElementById("p-" + id);
+  if(el) el.classList.add("activa");
+  var i = ORDEN.indexOf(id);
+  var nota = document.getElementById("paso-nota");
+  document.getElementById("barra").style.width = (i >= 0 ? ((i+1)/ORDEN.length*100) : (id === "final" ? 100 : 0)) + "%";
+  nota.textContent = i >= 0 ? ("Paso " + (i+1) + " de " + ORDEN.length) : "";
+  window.scrollTo({top:0, behavior:"instant"});
+  if(id === "p4") mostrarResultado();
+  if(id === "p5") mostrarResumen();
+}
+document.addEventListener("click", function(ev){
+  var b = ev.target.closest("[data-ir]");
+  if(!b) return;
+  var destino = b.getAttribute("data-ir");
+  if(destino === "inicio" && b.textContent.indexOf("Revisar otra") === 0) reiniciar();
+  ir(destino === "inicio" ? "inicio" : destino === "como" ? "como" : destino);
+});
+
+/* ---------- paso 1: comunas y barrios ---------- */
+var selC = document.getElementById("comuna"), selB = document.getElementById("barrio");
+Object.keys(LUGARES).forEach(function(c){
+  var o = document.createElement("option"); o.value = c; o.textContent = c; selC.appendChild(o);
+});
+function llenarBarrios(){
+  selB.innerHTML = "";
+  (LUGARES[selC.value] || []).concat(["Otro / no aparece en la lista"]).forEach(function(b){
+    var o = document.createElement("option"); o.value = b; o.textContent = b; selB.appendChild(o);
+  });
+  verOtro();
+}
+function verOtro(){
+  document.getElementById("barrio-otro-caja").style.display =
+    selB.value.indexOf("Otro") === 0 ? "block" : "none";
+}
+selC.addEventListener("change", llenarBarrios);
+selB.addEventListener("change", verOtro);
+llenarBarrios();
+
+/* ---------- paso 2: mostrar detalle solo si hay grietas ---------- */
+function verDetalleGrietas(){
+  var v = val("grietas");
+  document.getElementById("detalle-grietas").style.display = v === "si" ? "block" : "none";
+}
+document.querySelectorAll('input[name="grietas"]').forEach(function(r){
+  r.addEventListener("change", verDetalleGrietas);
+});
+verDetalleGrietas();
+
+function val(n){ var e = document.querySelector('input[name="'+n+'"]:checked'); return e ? e.value : ""; }
+function marcados(n){
+  return Array.prototype.map.call(document.querySelectorAll('input[name="'+n+'"]:checked'), function(e){ return e.value; });
+}
+function esc(s){ var d = document.createElement("div"); d.textContent = s == null ? "" : String(s); return d.innerHTML; }
+
+function recoger(){
+  var barrio = selB.value.indexOf("Otro") === 0
+    ? (document.getElementById("barrio-otro").value.trim() || "Sin especificar")
+    : selB.value;
+  return {
+    antes84: val("antes84"), profesional: val("profesional"),
+    comuna: selC.value, barrio: barrio,
+    material: val("material"), anio: document.getElementById("anio").value.trim(),
+    grietas: val("grietas"), donde: marcados("donde"), recientes: val("recientes"),
+    aumentan: val("aumentan"), sismo: val("sismo"), inclinado: val("inclinado"),
+    desprende: val("desprende"), ampliada: val("ampliada"), agua: val("agua"),
+    fotos: fotos.length
+  };
+}
+
+/* ---------- paso 3: fotos ---------- */
+var ELEMENTOS = ["Muro","Columna","Viga","Techo o losa","Fachada","Piso","Base o cimentación","Vista general","Otro"];
+document.getElementById("entrada-fotos").addEventListener("change", function(ev){
+  var nuevos = Array.prototype.slice.call(ev.target.files || []);
+  for(var i=0; i<nuevos.length && fotos.length<6; i++){
+    fotos.push({archivo:nuevos[i], elemento:"Vista general"});
+  }
+  ev.target.value = "";
+  pintarFotos();
+});
+function pintarFotos(){
+  var cont = document.getElementById("lista-fotos");
+  cont.innerHTML = "";
+  fotos.forEach(function(f, idx){
+    var div = document.createElement("div"); div.className = "foto";
+    var img = document.createElement("img");
+    img.alt = "Fotografía " + (idx+1);
+    img.src = URL.createObjectURL(f.archivo);
+    img.onload = function(){ URL.revokeObjectURL(img.src); };
+    var cuerpo = document.createElement("div"); cuerpo.className = "cuerpo";
+    var t = document.createElement("label"); t.className = "campo"; t.style.fontSize = ".95rem";
+    t.textContent = "¿Qué aparece en esta foto?";
+    var sel = document.createElement("select");
+    ELEMENTOS.forEach(function(e){ var o = document.createElement("option"); o.value = e; o.textContent = e; sel.appendChild(o); });
+    sel.value = f.elemento;
+    sel.addEventListener("change", function(){ f.elemento = sel.value; });
+    var quitar = document.createElement("button");
+    quitar.type = "button"; quitar.textContent = "Quitar esta foto";
+    quitar.onclick = function(){ fotos.splice(idx,1); pintarFotos(); };
+    cuerpo.appendChild(t); cuerpo.appendChild(sel); cuerpo.appendChild(quitar);
+    div.appendChild(img); div.appendChild(cuerpo); cont.appendChild(div);
+  });
+}
+
+/* ---------- paso 4: resultado ---------- */
+var ICONOS = {
+  verde:'<svg class="ico" width="42" height="42" viewBox="0 0 42 42" aria-hidden="true"><circle cx="21" cy="21" r="19" fill="none" stroke="#2E7D5B" stroke-width="2.5"/><path d="M13 21.5 L19 27 L29 15" fill="none" stroke="#2E7D5B" stroke-width="3" stroke-linecap="round"/></svg>',
+  ambar:'<svg class="ico" width="42" height="42" viewBox="0 0 42 42" aria-hidden="true"><circle cx="21" cy="21" r="19" fill="none" stroke="#B87503" stroke-width="2.5"/><line x1="21" y1="11" x2="21" y2="24" stroke="#B87503" stroke-width="3" stroke-linecap="round"/><circle cx="21" cy="30" r="2" fill="#B87503"/></svg>',
+  rojo:'<svg class="ico" width="42" height="42" viewBox="0 0 42 42" aria-hidden="true"><path d="M21 3 L40 37 H2 Z" fill="none" stroke="#C33A26" stroke-width="2.5" stroke-linejoin="round"/><line x1="21" y1="15" x2="21" y2="26" stroke="#C33A26" stroke-width="3" stroke-linecap="round"/><circle cx="21" cy="31" r="2" fill="#C33A26"/></svg>'
+};
+
+function mostrarResultado(){
+  datosActuales = recoger();
+  var r = evaluar(datosActuales);
+  ultimaEvaluacion = r;
+  var t = TEXTOS[r.nivel];
+
+  var senales = "";
+  r.altas.forEach(function(s){ senales += '<li><span class="pt alta"></span><span>'+esc(s)+'</span></li>'; });
+  r.medias.forEach(function(s){ senales += '<li><span class="pt media"></span><span>'+esc(s)+'</span></li>'; });
+  if(!senales) senales = '<li><span class="pt ctx"></span><span>No marcaste señales de daño.</span></li>';
+
+  var ctx = r.contexto.map(function(s){ return '<li><span class="pt ctx"></span><span>'+esc(s)+'</span></li>'; }).join("");
+  var recs = t.recomendaciones.map(function(s){ return "<li><span>"+esc(s)+"</span></li>"; }).join("");
+
+  var urgente = r.nivel === "rojo"
+    ? '<div class="aviso rojo" style="margin:0 0 20px"><div><b>Si sientes que hay peligro ahora mismo, sal del lugar y llama al 123.</b></div></div>'
+    : "";
+
+  document.getElementById("caja-resultado").innerHTML =
+    '<div class="resultado r-'+r.nivel+'">' +
+      '<div class="cabeza">'+ICONOS[r.nivel]+'<div><h2>'+esc(t.titulo)+'</h2></div></div>' +
+      '<div class="cuerpo">' +
+        urgente +
+        '<p>'+esc(t.resumen)+'</p>' +
+        '<h3 style="margin-top:24px">Qué señales llevaron a este resultado</h3>' +
+        '<ul class="senales" style="margin-top:10px">'+senales+'</ul>' +
+        (ctx ? '<h3 style="margin-top:24px">Contexto de la vivienda</h3>' +
+               '<p class="nota" style="margin:6px 0 0">Estos datos no significan por sí solos que la vivienda sea insegura, pero sí se tienen en cuenta.</p>' +
+               '<ul class="senales" style="margin-top:10px">'+ctx+'</ul>' : "") +
+        '<h3 style="margin-top:26px">Qué te recomendamos hacer</h3>' +
+        '<ul class="recomendaciones">'+recs+'</ul>' +
+      '</div>' +
+    '</div>';
+}
+
+/* ---------- paso 5: resumen ---------- */
+var SI_NO = {si:"Sí", no:"No", nose:"No sé", "":"—"};
+function mostrarResumen(){
+  var d = datosActuales || recoger();
+  var t = TEXTOS[(ultimaEvaluacion || evaluar(d)).nivel];
+  var filas = [
+    ["Resultado preliminar", t.titulo],
+    ["Ubicación", d.comuna + " · " + d.barrio],
+    ["Material principal", d.material],
+    ["Año de construcción", d.anio || "No indicado"],
+    ["Anterior a 1984", SI_NO[d.antes84]],
+    ["Con arquitecto o ingeniero", SI_NO[d.profesional]],
+    ["Grietas o fisuras", SI_NO[d.grietas] + (d.grietas === "si" && d.donde.length ? " · " + d.donde.map(function(k){ return NOMBRE_LUGAR[k]; }).join(", ") : "")],
+    ["Partes inclinadas o hundimientos", SI_NO[d.inclinado]],
+    ["Desprendimientos", SI_NO[d.desprende]],
+    ["Ampliaciones o pisos nuevos", SI_NO[d.ampliada]],
+    ["Filtraciones de agua", SI_NO[d.agua]],
+    ["Fotografías adjuntas", String(d.fotos)]
+  ];
+  document.getElementById("resumen").innerHTML = "<dl>" + filas.map(function(f){
+    return "<div><dt>"+esc(f[0])+"</dt><dd>"+esc(f[1])+"</dd></div>";
+  }).join("") + "</dl>";
+}
+
+/* ---------- guardar (solo en esta pantalla: sin base compartida en esta versión) ---------- */
+var localReportes = [];
+pintarMapa(localReportes);
+
+document.getElementById("guardar").addEventListener("click", async function(){
+  var est = document.getElementById("estado-guardado");
+  var d = datosActuales || recoger();
+  var r = ultimaEvaluacion || evaluar(d);
+  var folio = "MED-" + String(Date.now()).slice(-6);
+  var doc = {
+    folio: folio, comuna: d.comuna, barrio: d.barrio, material: d.material,
+    nivel: r.nivel, senales: r.altas.concat(r.medias).slice(0,8),
+    fotos: d.fotos, comentario: document.getElementById("comentario").value.trim().slice(0,400),
+    ts: Date.now()
+  };
+  this.disabled = true;
+  doc.id = folio; localReportes.unshift(doc); pintarMapa(localReportes);
+  est.textContent = "";
+  this.disabled = false;
+  document.getElementById("folio").textContent = folio;
+  ir("final");
+});
+
+/* ---------- mapa de la segunda etapa ---------- */
+var COLORN = {verde:"#2E7D5B", ambar:"#B87503", rojo:"#C33A26"};
+function pintarMapa(items){
+  var g = document.getElementById("pines");
+  if(!g) return;
+  g.innerHTML = "";
+  var calientes = {};
+  items.forEach(function(r){
+    var num = (String(r.comuna).match(/Comuna (\d+)/) || [])[1];
+    var zid = ZONA_DE[num] || "z-centrooriente";
+    var z = CENTRO_ZONA[zid];
+    calientes[zid] = true;
+    var s = 0, sem = String(r.id || r.folio || "") + String(r.barrio || "");
+    for(var i=0;i<sem.length;i++) s = (s*31 + sem.charCodeAt(i)) % 997;
+    var c = document.createElementNS("http://www.w3.org/2000/svg","circle");
+    c.setAttribute("cx", z.x + ((s % 62) - 31));
+    c.setAttribute("cy", z.y + (((s >> 3) % 52) - 26));
+    c.setAttribute("r", r.nivel === "rojo" ? 6 : 4.5);
+    c.setAttribute("fill", COLORN[r.nivel] || "#5C6561");
+    c.setAttribute("stroke", "#FFFFFF"); c.setAttribute("stroke-width", "1.2");
+    var ttl = document.createElementNS("http://www.w3.org/2000/svg","title");
+    ttl.textContent = (r.barrio || "") + " — " + (r.nivel === "rojo" ? "señales potencialmente graves" : r.nivel === "ambar" ? "para revisar" : "sin señales evidentes");
+    c.appendChild(ttl); g.appendChild(c);
+  });
+  Object.keys(CENTRO_ZONA).forEach(function(id){
+    var el = document.getElementById(id);
+    if(el) el.classList.toggle("hot", !!calientes[id]);
+  });
+  var n = items.length;
+  document.getElementById("conteo-reportes").textContent =
+    n ? (n === 1 ? "1 reporte registrado en el prototipo." : n + " reportes registrados en el prototipo.") : "";
+}
+
+/* ---------- reiniciar ---------- */
+function reiniciar(){
+  fotos = []; pintarFotos();
+  ultimaEvaluacion = null; datosActuales = null;
+  document.getElementById("comentario").value = "";
+  document.getElementById("anio").value = "";
+  document.querySelectorAll('input[type="checkbox"]').forEach(function(c){ c.checked = false; });
+  [["antes84","nose"],["profesional","nose"],["grietas","no"],["recientes","nose"],["aumentan","nose"],
+   ["sismo","nose"],["inclinado","no"],["desprende","no"],["ampliada","no"],["agua","no"]].forEach(function(par){
+    var e = document.querySelector('input[name="'+par[0]+'"][value="'+par[1]+'"]');
+    if(e) e.checked = true;
+  });
+  verDetalleGrietas();
+}
+
+ir("inicio");
+})();
+</script>
+</body>
+</html>
