@@ -466,7 +466,16 @@ footer b{color:var(--tinta)}
   <p style="margin:0">Prototipo académico · proyecto de innovación en control preventivo del riesgo sismorresistente, Medellín.</p>
 </footer>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
+// CONFIGURACIÓN DE SUPABASE: reemplaza estos dos valores por los de tu proyecto.
+const PLOMADA_SUPABASE_URL = "https://uvjsdwpehzsbqfsbcxpa.supabase.co";
+const PLOMADA_SUPABASE_PUBLISHABLE_KEY = "sb_publishable_UNXePE1zgOmPXTJyWxoaOQ_knIa5bk9";
+const plomadaSupabase = window.supabase.createClient(
+  PLOMADA_SUPABASE_URL,
+  PLOMADA_SUPABASE_PUBLISHABLE_KEY
+);
+
 (function(){
 "use strict";
 
@@ -759,27 +768,79 @@ function mostrarResumen(){
   }).join("") + "</dl>";
 }
 
-/* ---------- guardar (solo en esta pantalla: sin base compartida en esta versión) ---------- */
+/* ---------- guardar el reporte en Supabase ---------- */
 var localReportes = [];
 pintarMapa(localReportes);
 
 document.getElementById("guardar").addEventListener("click", async function(){
+  var boton = this;
   var est = document.getElementById("estado-guardado");
   var d = datosActuales || recoger();
   var r = ultimaEvaluacion || evaluar(d);
-  var folio = "MED-" + String(Date.now()).slice(-6);
-  var doc = {
-    folio: folio, comuna: d.comuna, barrio: d.barrio, material: d.material,
-    nivel: r.nivel, senales: r.altas.concat(r.medias).slice(0,8),
-    fotos: d.fotos, comentario: document.getElementById("comentario").value.trim().slice(0,400),
-    ts: Date.now()
+  var comentario = document.getElementById("comentario").value.trim().slice(0,400);
+  var reporteId = crypto.randomUUID();
+  var folio = "PLO-" + reporteId.slice(0,8).toUpperCase();
+
+  // Las respuestas se guardan juntas en el campo JSONB de la tabla.
+  var payload = {
+    id: reporteId,
+    comuna: d.comuna || "Sin especificar",
+    barrio: d.barrio || "Sin especificar",
+    material: d.material || null,
+    anio_construccion: d.anio && Number(d.anio) ? Number(d.anio) : null,
+    respuestas: {
+      antes84: d.antes84,
+      participacion_profesional: d.profesional,
+      grietas: d.grietas,
+      ubicacion_grietas: d.donde,
+      grietas_recientes: d.recientes,
+      grietas_aumentan: d.aumentan,
+      grietas_despues_sismo: d.sismo,
+      inclinacion_o_hundimiento: d.inclinado,
+      desprendimientos: d.desprende,
+      ampliaciones: d.ampliada,
+      filtraciones_agua: d.agua,
+      cantidad_fotos_seleccionadas: d.fotos,
+      senales_potencialmente_graves: r.altas,
+      senales_para_revision: r.medias,
+      contexto: r.contexto
+    },
+    nivel_preliminar: r.nivel,
+    comentario: comentario || null
   };
-  this.disabled = true;
-  doc.id = folio; localReportes.unshift(doc); pintarMapa(localReportes);
-  est.textContent = "";
-  this.disabled = false;
-  document.getElementById("folio").textContent = folio;
-  ir("final");
+
+  boton.disabled = true;
+  est.textContent = "Guardando el reporte…";
+
+  try {
+    var resultado = await plomadaSupabase.from("reportes").insert(payload);
+    if (resultado.error) throw resultado.error;
+
+    // Esta lista y el mapa siguen siendo locales en esta primera etapa.
+    // Solo la información del reporte ya se guarda en la base de datos.
+    var doc = {
+      id: reporteId,
+      folio: folio,
+      comuna: d.comuna,
+      barrio: d.barrio,
+      material: d.material,
+      nivel: r.nivel,
+      senales: r.altas.concat(r.medias).slice(0,8),
+      fotos: d.fotos,
+      comentario: comentario,
+      ts: Date.now()
+    };
+    localReportes.unshift(doc);
+    pintarMapa(localReportes);
+    document.getElementById("folio").textContent = folio;
+    est.textContent = "Reporte guardado correctamente.";
+    boton.disabled = false;
+    ir("final");
+  } catch (error) {
+    console.error("Error al guardar el reporte en Supabase:", error);
+    est.textContent = "No se pudo guardar el reporte. Verifica la URL y la clave de Supabase, y que la política de INSERT esté configurada. No necesitas volver a llenar el formulario; puedes intentarlo de nuevo.";
+    boton.disabled = false;
+  }
 });
 
 /* ---------- mapa de la segunda etapa ---------- */
