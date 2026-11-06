@@ -33,7 +33,7 @@
   color-scheme:light;
 }
 *,*::before,*::after{box-sizing:border-box}
-html{-webkit-text-size-adjust:100%;scroll-padding-top:90px}
+html{-webkit-text-size-adjust:100%;scroll-padding-top:112px}
 body{
   margin:0;background:var(--papel);color:var(--tinta);
   font-family:"Public Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
@@ -51,7 +51,7 @@ p{margin:0 0 1rem}
 header{position:sticky;top:env(safe-area-inset-top,0px);z-index:30;background:var(--papel);border-bottom:1px solid var(--linea)}
 .bar{display:flex;align-items:center;gap:12px;height:60px}
 .marca{display:flex;align-items:center;gap:9px;font-family:"Archivo";font-weight:800;font-size:1.05rem;letter-spacing:-.03em}
-.paso-nota{margin-left:auto;font-size:.9rem;color:var(--tinta-2);font-weight:600}
+.paso-nota{font-size:.9rem;color:var(--tinta-2);font-weight:600}
 .progreso{height:5px;background:var(--linea)}
 .progreso i{display:block;height:100%;width:0;background:var(--verde);transition:width .35s ease}
 
@@ -85,14 +85,14 @@ header{position:sticky;top:env(safe-area-inset-top,0px);z-index:30;background:va
 .opciones.fila{flex-direction:row;flex-wrap:wrap}
 .opcion{position:relative;flex:1 1 auto}
 .opcion input{position:absolute;opacity:0;width:100%;height:100%;left:0;top:0;margin:0;cursor:pointer}
-.opcion span{display:flex;align-items:center;gap:12px;min-height:54px;padding:12px 16px;
+.opcion > span{display:flex;align-items:center;gap:12px;min-height:54px;padding:12px 16px;
   border:2px solid var(--linea);border-radius:var(--radio);cursor:pointer;font-weight:600;
   background:var(--blanco);transition:border-color .12s,background .12s}
 .opcion input:checked+span{border-color:var(--tinta);background:#F7F8F7}
 .opcion input:checked+span::before{content:"";width:12px;height:12px;border-radius:50%;background:var(--tinta);flex:0 0 12px}
 .opcion input:not(:checked)+span::before{content:"";width:12px;height:12px;border-radius:50%;box-shadow:inset 0 0 0 2px var(--linea-2);flex:0 0 12px}
 label.campo{display:block;font-weight:700;margin-bottom:8px}
-select,input[type=text],input[type=number],textarea{width:100%;background:var(--blanco);
+select,input[type=text],input[type=number],input[type=search],textarea{width:100%;background:var(--blanco);
   border:2px solid var(--linea);color:var(--tinta);font:inherit;font-size:1rem;
   padding:14px 14px;border-radius:var(--radio);min-height:54px}
 textarea{min-height:96px;resize:vertical}
@@ -164,6 +164,48 @@ textarea{min-height:96px;resize:vertical}
 .etq{fill:#6C7570;font-size:9px;font-family:"Public Sans",sans-serif}
 footer{border-top:1px solid var(--linea);padding:30px 0 48px;color:var(--tinta-2);font-size:.9rem}
 footer b{color:var(--tinta)}
+
+/* ---------- ayuda y glosario, ayudas contextuales, encuesta ---------- */
+[hidden]{display:none!important}
+.fila-paso{padding-top:2px;padding-bottom:8px}
+.btn-ayuda{margin-left:auto;min-height:44px;padding:8px 14px;border:2px solid var(--linea-2);border-radius:var(--radio);
+  background:transparent;color:var(--tinta);font:700 .92rem/1.2 "Public Sans",sans-serif;cursor:pointer}
+.btn-ayuda:hover{border-color:var(--tinta);background:var(--blanco)}
+.btn-ayuda:focus-visible,.btn-que:focus-visible,.cats button:focus-visible,.estrella input:focus-visible+.glifo{
+  outline:3px solid var(--foco);outline-offset:2px}
+.opcion .txt{flex:1;min-width:0}
+.opcion .txt small{display:block;font-weight:400;font-size:.9rem;color:var(--tinta-2);line-height:1.35;margin-top:2px}
+.opcion-wrap{display:flex;flex-wrap:wrap;align-items:center;gap:0 12px}
+.opcion-wrap > .opcion{flex:1 1 100%}
+.btn-que{background:none;border:none;color:var(--foco);font:600 .93rem/1.2 "Public Sans",sans-serif;
+  text-decoration:underline;padding:10px 6px;min-height:44px;cursor:pointer;text-align:left}
+.ayuda-ctx{flex:1 1 100%;background:#F7F8F7;border:1px solid var(--linea);border-left:4px solid var(--foco);
+  border-radius:var(--radio);padding:14px 16px;font-size:.95rem;margin:0 0 6px}
+.ayuda-ctx p{margin:0 0 8px}
+.ayuda-ctx .btn-que{padding-left:0}
+.ayuda-ctx .t{display:block;font-family:"Archivo","Public Sans",sans-serif;font-weight:700;font-size:1.02rem;margin-bottom:4px}
+.cats{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0 4px}
+.cats button{background:var(--blanco);border:2px solid var(--linea);border-radius:999px;padding:8px 14px;min-height:44px;
+  font:600 .92rem "Public Sans",sans-serif;color:var(--tinta);cursor:pointer}
+.cats button:hover{border-color:var(--tinta)}
+.gl-cat > h3{margin:30px 0 4px;font-size:1.15rem}
+.gl-item{background:var(--blanco);border:1px solid var(--linea);border-radius:var(--radio);padding:16px 18px;margin-top:10px}
+.gl-item:focus{outline:3px solid var(--foco);outline-offset:2px}
+.gl-item.resaltado{border-color:var(--foco);box-shadow:0 0 0 2px var(--foco)}
+.gl-item h4{margin:0 0 6px;font-family:"Archivo","Public Sans",sans-serif;font-size:1.08rem;letter-spacing:-.01em}
+.gl-item p{margin:0 0 8px;font-size:.98rem}
+.gl-item p:last-child{margin-bottom:0}
+.gl-item .ej{color:var(--tinta-2)}
+.gl-item .cuid{font-size:.93rem;padding-left:10px;border-left:3px solid var(--linea-2)}
+fieldset.enc{border:0;padding:0;margin:0 0 24px;min-width:0}
+fieldset.enc legend{padding:0;font-weight:700;font-size:1.04rem;margin-bottom:10px}
+.estrellas{display:flex;gap:4px;flex-wrap:wrap}
+.estrella{position:relative;display:block}
+.estrella input{position:absolute;opacity:0;width:100%;height:100%;left:0;top:0;margin:0;cursor:pointer}
+.estrella .glifo{display:flex;align-items:center;justify-content:center;width:52px;height:52px;font-size:2.1rem;
+  line-height:1;color:var(--linea-2);cursor:pointer;border-radius:var(--radio)}
+.estrella.llena .glifo{color:var(--ambar)}
+.enc-escala{display:flex;justify-content:space-between;gap:12px;margin:6px 0 0}
 </style>
 </head>
 <body>
@@ -174,8 +216,9 @@ footer b{color:var(--tinta)}
       <svg width="15" height="24" viewBox="0 0 16 26" aria-hidden="true"><line x1="8" y1="0" x2="8" y2="15" stroke="#5C6561" stroke-width="1.6"/><path d="M8 15 L13 19 L8 26 L3 19 Z" fill="#171B19"/></svg>
       Plomada
     </div>
-    <span class="paso-nota" id="paso-nota"></span>
+    <button class="btn-ayuda" type="button" id="abrir-ayuda">Ayuda y glosario</button>
   </div>
+  <div class="wrap fila-paso" id="fila-paso" hidden><span class="paso-nota" id="paso-nota"></span></div>
   <div class="progreso"><i id="barra"></i></div>
 </header>
 
@@ -190,7 +233,10 @@ footer b{color:var(--tinta)}
     <button class="btn sec" data-ir="como">¿Cómo funciona?</button>
   </div>
   <div class="aviso rojo" style="margin-top:30px">
-    <div><b>Si en este momento hay peligro</b> — material cayéndose, muros inclinándose, olor a gas — sal del lugar y llama al <b>123</b>. Esta página es para revisar con calma.</div>
+    <div><b>¿Ves algo que parece estar cayendo o moviéndose, o sientes olor a gas?</b> No te acerques ni intentes tocarlo. Aléjate de esa zona. Si crees que hay peligro inmediato, llama al <b>123</b>. No pongas tu seguridad en riesgo para tomar una fotografía.</div>
+  </div>
+  <div class="aviso neutro" style="margin-top:0">
+    <div><b>Qué hace esta página.</b> Plomada ayuda a registrar señales que se observan en una vivienda. La información y las fotografías no reemplazan una visita ni un diagnóstico de un profesional. La página no certifica que una vivienda sea segura.</div>
   </div>
 </section>
 
@@ -218,7 +264,7 @@ footer b{color:var(--tinta)}
 
   <div class="pregunta" style="margin-top:22px">
     <span class="q">¿Fue construida antes de 1984?</span>
-    <span class="ayuda">Las primeras normas sismorresistentes del país son de 1984.</span>
+    <span class="ayuda">Las primeras normas del país para que las casas resistan temblores (normas sismorresistentes) son de 1984.</span>
     <div class="opciones fila">
       <label class="opcion"><input type="radio" name="antes84" value="si"><span>Sí</span></label>
       <label class="opcion"><input type="radio" name="antes84" value="no"><span>No</span></label>
@@ -250,10 +296,10 @@ footer b{color:var(--tinta)}
   <div class="pregunta">
     <span class="q">¿De qué material está construida principalmente?</span>
     <div class="opciones">
-      <label class="opcion"><input type="radio" name="material" value="Ladrillo o mampostería" checked><span>Ladrillo o mampostería</span></label>
+      <label class="opcion"><input type="radio" name="material" value="Ladrillo o mampostería" checked><span><span class="txt">Pared de ladrillo o bloque (mampostería)<small>Paredes hechas pegando ladrillos o bloques con una mezcla llamada mortero.</small></span></span></label>
       <label class="opcion"><input type="radio" name="material" value="Concreto"><span>Concreto</span></label>
-      <label class="opcion"><input type="radio" name="material" value="Bahareque"><span>Bahareque</span></label>
-      <label class="opcion"><input type="radio" name="material" value="Guadua"><span>Guadua</span></label>
+      <label class="opcion"><input type="radio" name="material" value="Bahareque"><span><span class="txt">Bahareque<small>Paredes hechas con guadua o madera y cubiertas con barro o cemento.</small></span></span></label>
+      <label class="opcion"><input type="radio" name="material" value="Guadua"><span><span class="txt">Guadua<small>Un bambú grueso que se usa como material de construcción.</small></span></span></label>
       <label class="opcion"><input type="radio" name="material" value="Madera"><span>Madera</span></label>
       <label class="opcion"><input type="radio" name="material" value="Otro"><span>Otro</span></label>
       <label class="opcion"><input type="radio" name="material" value="No sé"><span>No sé</span></label>
@@ -273,11 +319,12 @@ footer b{color:var(--tinta)}
 
 <!-- ============ PASO 2 ============ -->
 <section class="pantalla" id="p-p2">
-  <h2>Posibles daños</h2>
-  <p class="nota" style="margin-top:10px">Responde pensando en lo que ves hoy en la vivienda.</p>
+  <h2>Lo que observas</h2>
+  <p class="nota" style="margin-top:10px">Cuéntanos lo que ves hoy en la vivienda. No tienes que saber cómo se llama cada parte ni si es grave: eso lo revisa una persona con formación técnica. Mira siempre desde un lugar seguro.</p>
 
   <div class="pregunta" style="margin-top:22px">
     <span class="q">¿Has encontrado grietas o fisuras?</span>
+    <span class="ayuda">Una grieta o fisura es una línea o abertura que aparece en una pared, techo, piso u otra parte. Puede ser delgada o más ancha.</span>
     <div class="opciones fila">
       <label class="opcion"><input type="radio" name="grietas" value="si"><span>Sí</span></label>
       <label class="opcion"><input type="radio" name="grietas" value="no" checked><span>No</span></label>
@@ -288,17 +335,39 @@ footer b{color:var(--tinta)}
   <div id="detalle-grietas" style="display:none">
     <div class="pregunta">
       <span class="q">¿Dónde están?</span>
-      <span class="ayuda">Puedes marcar varias.</span>
+      <span class="ayuda">Puedes marcar varias. Si no sabes cómo se llama la parte, elige la última opción.</span>
       <div class="opciones">
-        <label class="opcion"><input type="checkbox" name="donde" value="muro"><span>En un muro</span></label>
-        <label class="opcion"><input type="checkbox" name="donde" value="columna"><span>En una columna</span></label>
-        <label class="opcion"><input type="checkbox" name="donde" value="viga"><span>En una viga</span></label>
-        <label class="opcion"><input type="checkbox" name="donde" value="techo"><span>En el techo o la losa</span></label>
-        <label class="opcion"><input type="checkbox" name="donde" value="fachada"><span>En la fachada</span></label>
-        <label class="opcion"><input type="checkbox" name="donde" value="piso"><span>En el piso</span></label>
-        <label class="opcion"><input type="checkbox" name="donde" value="cimentacion"><span>En la base o cimentación</span></label>
-        <label class="opcion"><input type="checkbox" name="donde" value="otro"><span>En otra parte</span></label>
+        <div class="opcion-wrap">
+          <label class="opcion"><input type="checkbox" name="donde" value="muro"><span><span class="txt">En una pared o muro</span></span></label>
+          <button type="button" class="btn-que" data-ayuda="pared" aria-expanded="false" aria-controls="ctx-pared">¿Qué significa?<span class="sr"> en una pared o muro</span></button>
+          <div class="ayuda-ctx" id="ctx-pared" hidden></div>
+        </div>
+        <div class="opcion-wrap">
+          <label class="opcion"><input type="checkbox" name="donde" value="columna"><span><span class="txt">En una columna<small>(pieza que suele ser vertical y ayuda a sostener la casa)</small></span></span></label>
+          <button type="button" class="btn-que" data-ayuda="columna" aria-expanded="false" aria-controls="ctx-columna">¿Qué significa?<span class="sr"> en una columna</span></button>
+          <div class="ayuda-ctx" id="ctx-columna" hidden></div>
+        </div>
+        <div class="opcion-wrap">
+          <label class="opcion"><input type="checkbox" name="donde" value="viga"><span><span class="txt">En una viga<small>(pieza que suele estar en posición horizontal y ayuda a sostener el techo o el piso)</small></span></span></label>
+          <button type="button" class="btn-que" data-ayuda="viga" aria-expanded="false" aria-controls="ctx-viga">¿Qué significa?<span class="sr"> en una viga</span></button>
+          <div class="ayuda-ctx" id="ctx-viga" hidden></div>
+        </div>
+        <div class="opcion-wrap">
+          <label class="opcion"><input type="checkbox" name="donde" value="techo"><span><span class="txt">En el techo o cubierta<small>(puede ser una placa de concreto, tejas o láminas)</small></span></span></label>
+          <button type="button" class="btn-que" data-ayuda="techo" aria-expanded="false" aria-controls="ctx-techo">¿Qué significa?<span class="sr"> en el techo o cubierta</span></button>
+          <div class="ayuda-ctx" id="ctx-techo" hidden></div>
+        </div>
+        <label class="opcion"><input type="checkbox" name="donde" value="fachada"><span><span class="txt">En la fachada<small>(la pared que da a la calle)</small></span></span></label>
+        <label class="opcion"><input type="checkbox" name="donde" value="piso"><span><span class="txt">En el piso</span></span></label>
+        <label class="opcion"><input type="checkbox" name="donde" value="cimentacion"><span><span class="txt">En la base o cimientos<small>(la parte de abajo que apoya la casa en el terreno; normalmente no se ve)</small></span></span></label>
+        <label class="opcion"><input type="checkbox" name="donde" value="otro"><span><span class="txt">En otra parte</span></span></label>
+        <label class="opcion"><input type="checkbox" name="donde" value="nose"><span><span class="txt">No sé cómo se llama esa parte</span></span></label>
       </div>
+    </div>
+    <div class="pregunta">
+      <label class="campo" for="ubicacion-exacta">¿Dónde está exactamente? <span style="font-weight:400;color:var(--tinta-2)">(opcional)</span></label>
+      <input type="text" id="ubicacion-exacta" maxlength="200" placeholder="Ej.: En la pared de la sala, junto a la ventana">
+      <p class="nota" style="margin:8px 0 0">No escribas tu dirección ni tu nombre.</p>
     </div>
     <div class="pregunta">
       <span class="q">¿Aparecieron hace poco?</span>
@@ -309,15 +378,15 @@ footer b{color:var(--tinta)}
       </div>
     </div>
     <div class="pregunta">
-      <span class="q">¿Han aumentado con el tiempo?</span>
+      <span class="q">¿Han cambiado desde que las notaste?</span>
       <div class="opciones fila">
-        <label class="opcion"><input type="radio" name="aumentan" value="si"><span>Sí</span></label>
-        <label class="opcion"><input type="radio" name="aumentan" value="no"><span>No</span></label>
-        <label class="opcion"><input type="radio" name="aumentan" value="nose" checked><span>No sé</span></label>
+        <label class="opcion"><input type="radio" name="aumentan" value="si"><span>Sí, parecen haber aumentado</span></label>
+        <label class="opcion"><input type="radio" name="aumentan" value="no"><span>No he notado cambios</span></label>
+        <label class="opcion"><input type="radio" name="aumentan" value="nose" checked><span>No estoy seguro/a</span></label>
       </div>
     </div>
     <div class="pregunta">
-      <span class="q">¿Aparecieron después de un sismo?</span>
+      <span class="q">¿Aparecieron después de un temblor o sismo?</span>
       <div class="opciones fila">
         <label class="opcion"><input type="radio" name="sismo" value="si"><span>Sí</span></label>
         <label class="opcion"><input type="radio" name="sismo" value="no"><span>No</span></label>
@@ -328,7 +397,7 @@ footer b{color:var(--tinta)}
 
   <div class="pregunta">
     <span class="q">¿Hay partes inclinadas o hundimientos?</span>
-    <span class="ayuda">Muros que se salieron de plomo, pisos hundidos, puertas que dejaron de cerrar.</span>
+    <span class="ayuda">Inclinada: una pared, columna u otra parte que parece ladeada. Hundimiento: una parte del piso, del terreno o de la construcción que parece más baja que antes o que lo que la rodea. Míralo desde lejos: no te acerques ni uses herramientas para medirlo.</span>
     <div class="opciones fila">
       <label class="opcion"><input type="radio" name="inclinado" value="si"><span>Sí</span></label>
       <label class="opcion"><input type="radio" name="inclinado" value="no" checked><span>No</span></label>
@@ -337,7 +406,8 @@ footer b{color:var(--tinta)}
   </div>
 
   <div class="pregunta">
-    <span class="q">¿Se han desprendido partes del muro, el techo o la fachada?</span>
+    <span class="q">¿Se han soltado o caído partes de una pared, del techo o de la fachada?</span>
+    <span class="ayuda">Por ejemplo: pañete (la capa de mezcla que cubre la pared), ladrillos, concreto o una pieza del techo. Si ves material flojo, no lo toques ni intentes quitarlo.</span>
     <div class="opciones fila">
       <label class="opcion"><input type="radio" name="desprende" value="si"><span>Sí</span></label>
       <label class="opcion"><input type="radio" name="desprende" value="no" checked><span>No</span></label>
@@ -347,6 +417,7 @@ footer b{color:var(--tinta)}
 
   <div class="pregunta">
     <span class="q">¿La vivienda ha sido ampliada o se le han agregado pisos?</span>
+    <span class="ayuda">Ampliar es construir más cuartos o más pisos sobre lo que ya estaba hecho.</span>
     <div class="opciones fila">
       <label class="opcion"><input type="radio" name="ampliada" value="si"><span>Sí</span></label>
       <label class="opcion"><input type="radio" name="ampliada" value="no" checked><span>No</span></label>
@@ -356,7 +427,7 @@ footer b{color:var(--tinta)}
 
   <div class="pregunta">
     <span class="q">¿Hay filtraciones de agua importantes?</span>
-    <span class="ayuda">Humedad permanente, mangueras rotas o agua corriendo cerca de la base.</span>
+    <span class="ayuda">Agua o humedad donde normalmente debería estar seco: manchas, pintura levantada, moho o goteo. También mangueras rotas o agua corriendo cerca de la base de la casa.</span>
     <div class="opciones fila">
       <label class="opcion"><input type="radio" name="agua" value="si"><span>Sí</span></label>
       <label class="opcion"><input type="radio" name="agua" value="no" checked><span>No</span></label>
@@ -379,6 +450,10 @@ footer b{color:var(--tinta)}
     <div><b>Para que la foto sirva:</b> con buena luz, primero una foto de toda la zona y después una de cerca del daño. Evita que salga movida.</div>
   </div>
 
+  <div class="aviso rojo" style="margin-top:0">
+    <div><b>Tómala solo si puedes hacerlo desde un lugar seguro.</b> No te acerques a partes flojas o inestables. No pongas tu seguridad en riesgo para tomar una fotografía.</div>
+  </div>
+
   <div class="zona-foto">
     <label class="btn sec" for="entrada-fotos" style="width:auto;display:inline-flex">Tomar o subir foto</label>
     <input id="entrada-fotos" type="file" accept="image/*" capture="environment" multiple hidden>
@@ -398,7 +473,7 @@ footer b{color:var(--tinta)}
   <div id="caja-resultado" style="margin-top:20px"></div>
 
   <div class="aviso neutro" style="margin-top:26px">
-    <div><b>Sobre la NSR‑10.</b> Es el reglamento colombiano que establece los requisitos de diseño y construcción sismorresistente. Este formulario <b>no certifica</b> que tu vivienda cumpla la NSR‑10: una evaluación técnica requiere información y revisión especializada, incluida la que no se ve en una foto.</div>
+    <div><b>Sobre la NSR‑10.</b> Es el Reglamento Colombiano de Construcción Sismo Resistente: establece los requisitos para diseñar y construir casas y edificios que resistan temblores. Este formulario <b>no certifica</b> que tu vivienda cumpla la NSR‑10: una evaluación técnica requiere información y revisión especializada, incluida la que no se ve en una foto.</div>
   </div>
 
   <div class="navegacion">
@@ -418,7 +493,7 @@ footer b{color:var(--tinta)}
     <textarea id="comentario" placeholder="Ej.: la grieta se abrió más después del temblor de agosto."></textarea>
   </div>
 
-  <p class="nota">Se guarda la comuna y el barrio, no tu dirección exacta.</p>
+  <p class="nota">Se guarda la comuna y el barrio, no tu dirección exacta. Por favor no escribas tu dirección, tu nombre ni otros datos personales en los comentarios.</p>
 
   <div class="navegacion">
     <button class="btn sec atras" data-ir="p4">Atrás</button>
@@ -434,6 +509,33 @@ footer b{color:var(--tinta)}
   <p class="folio" id="folio">—</p>
   <p>Guárdalo. Sirve para hacer seguimiento si más adelante pides una visita técnica.</p>
   <p class="nota" id="estado-fotos" style="margin-top:12px"></p>
+
+  <section class="pregunta" id="encuesta" aria-labelledby="enc-titulo" style="margin-top:28px">
+    <h3 id="enc-titulo">Tu opinión nos ayuda a mejorar</h3>
+    <p class="nota" style="margin:6px 0 20px">Son 3 preguntas cortas y no pedimos tus datos personales.</p>
+    <div id="enc-form">
+      <fieldset class="enc">
+        <legend>1. ¿Qué tan conforme quedaste con la página?</legend>
+        <div class="estrellas"><label class="estrella"><input type="radio" name="enc_conformidad" value="1"><span class="glifo" aria-hidden="true">☆</span><span class="sr">1 de 5</span></label><label class="estrella"><input type="radio" name="enc_conformidad" value="2"><span class="glifo" aria-hidden="true">☆</span><span class="sr">2 de 5</span></label><label class="estrella"><input type="radio" name="enc_conformidad" value="3"><span class="glifo" aria-hidden="true">☆</span><span class="sr">3 de 5</span></label><label class="estrella"><input type="radio" name="enc_conformidad" value="4"><span class="glifo" aria-hidden="true">☆</span><span class="sr">4 de 5</span></label><label class="estrella"><input type="radio" name="enc_conformidad" value="5"><span class="glifo" aria-hidden="true">☆</span><span class="sr">5 de 5</span></label></div>
+        <p class="nota enc-escala"><span>1 = nada conforme</span><span>5 = muy conforme</span></p>
+        <p class="nota" id="txt-conformidad" aria-live="polite" style="margin:4px 0 0"></p>
+      </fieldset>
+      <fieldset class="enc">
+        <legend>2. ¿Recomendarías esta página a otras personas?</legend>
+        <div class="estrellas"><label class="estrella"><input type="radio" name="enc_recomendaria" value="1"><span class="glifo" aria-hidden="true">☆</span><span class="sr">1 de 5</span></label><label class="estrella"><input type="radio" name="enc_recomendaria" value="2"><span class="glifo" aria-hidden="true">☆</span><span class="sr">2 de 5</span></label><label class="estrella"><input type="radio" name="enc_recomendaria" value="3"><span class="glifo" aria-hidden="true">☆</span><span class="sr">3 de 5</span></label><label class="estrella"><input type="radio" name="enc_recomendaria" value="4"><span class="glifo" aria-hidden="true">☆</span><span class="sr">4 de 5</span></label><label class="estrella"><input type="radio" name="enc_recomendaria" value="5"><span class="glifo" aria-hidden="true">☆</span><span class="sr">5 de 5</span></label></div>
+        <p class="nota enc-escala"><span>1 = no la recomendaría</span><span>5 = la recomendaría totalmente</span></p>
+        <p class="nota" id="txt-recomendaria" aria-live="polite" style="margin:4px 0 0"></p>
+      </fieldset>
+      <div style="margin-bottom:6px">
+        <label class="campo" for="enc-comentario">3. ¿Tienes algún comentario o sugerencia? <span style="font-weight:400;color:var(--tinta-2)">(opcional)</span></label>
+        <textarea id="enc-comentario" maxlength="1000" placeholder="Cuéntanos qué te gustó, qué no entendiste o qué cambiarías."></textarea>
+        <p class="nota" style="margin:8px 0 0">No escribas tu nombre, tu dirección ni otros datos personales.</p>
+      </div>
+      <button class="btn" type="button" id="enc-enviar" style="margin-top:18px">Enviar mi opinión</button>
+      <p class="nota" id="enc-estado" aria-live="polite" style="margin:12px 0 0"></p>
+    </div>
+    <div id="enc-gracias" tabindex="-1" hidden><p style="margin:0"><b>¡Gracias!</b> Tu opinión quedó guardada.</p></div>
+  </section>
 
   <h3 style="margin-top:34px">Segunda etapa: mapa de alertas</h3>
   <p class="nota" style="margin-top:8px">Así se vería el conjunto de reportes cuando la plataforma tenga base de datos compartida. En esta vista de revisión solo se muestran los reportes que guardes tú en esta pantalla; el municipio podría priorizar visitas técnicas donde se junten varios.</p>
@@ -460,10 +562,28 @@ footer b{color:var(--tinta)}
   </div>
 </section>
 
+<!-- ============ AYUDA Y GLOSARIO ============ -->
+<section class="pantalla" id="p-ayuda" aria-labelledby="ayuda-titulo">
+  <button class="btn sec" type="button" data-volver-ayuda style="width:auto;min-height:48px">← Volver a donde estabas</button>
+  <p class="nota" style="margin:8px 0 22px">Lo que ya escribiste en el formulario no se borra.</p>
+  <h2 id="ayuda-titulo" tabindex="-1">¿No conoces alguna palabra? Te la explicamos</h2>
+  <p style="margin-top:10px">Aquí encontrarás explicaciones sencillas de las partes de una vivienda y de las señales que puedes reportar.</p>
+  <div role="search" style="margin-top:16px">
+    <label class="campo" for="buscador">Buscar una palabra (por ejemplo: viga, grieta o humedad)</label>
+    <input type="search" id="buscador" placeholder="Escribe aquí" autocomplete="off">
+  </div>
+  <p class="nota" id="estado-busqueda" aria-live="polite" style="margin:8px 0 0"></p>
+  <nav class="cats" id="cats-nav" aria-label="Ir a una categoría del glosario"></nav>
+  <div id="glosario-contenido"></div>
+  <div class="navegacion">
+    <button class="btn sec" type="button" data-volver-ayuda>← Volver a donde estabas</button>
+  </div>
+</section>
+
 </main>
 
 <footer class="wrap">
-  <p><b>Esta plataforma no emite diagnósticos estructurales.</b> Entrega una orientación preliminar a partir de lo que respondes y de las fotos que subes. Cuando el resultado señale posibles daños graves, lo que corresponde es alejarse del área si hay peligro inmediato y buscar evaluación profesional o contactar a la autoridad competente. Emergencias: <b>123</b>.</p>
+  <p><b>Esta plataforma no emite diagnósticos estructurales ni certifica que una vivienda sea segura.</b> Entrega una orientación preliminar a partir de lo que respondes y de las fotos que subes. Cuando el resultado señale posibles daños graves, lo que corresponde es alejarse del área si hay peligro inmediato y buscar evaluación profesional o contactar a la autoridad competente. Emergencias: <b>123</b>.</p>
   <p style="margin:0">Prototipo académico · proyecto de innovación en control preventivo del riesgo sismorresistente, Medellín.</p>
 </footer>
 
@@ -521,8 +641,9 @@ var CENTRO_ZONA = {"z-nororiente":{x:400,y:70},"z-centrooriente":{x:435,y:158},"
    2. MOTOR DE ORIENTACIÓN  (función pura: entra el formulario,
       salen nivel + señales. Es lo que se porta tal cual a Python)
    ============================================================ */
-var NOMBRE_LUGAR = {muro:"un muro",columna:"una columna",viga:"una viga",techo:"el techo o la losa",
-  fachada:"la fachada",piso:"el piso",cimentacion:"la base o cimentación",otro:"otra parte"};
+var NOMBRE_LUGAR = {muro:"una pared o muro",columna:"una columna",viga:"una viga",techo:"el techo o la cubierta",
+  fachada:"la fachada",piso:"el piso",cimentacion:"la base o los cimientos",otro:"otra parte",
+  nose:"una parte de la vivienda cuyo nombre no conoces"};
 
 function evaluar(d){
   var altas = [], medias = [], contexto = [];
@@ -539,7 +660,7 @@ function evaluar(d){
 
   /* --- señales que deberían revisarse --- */
   if(d.grietas === "si"){
-    ["muro","techo","fachada","piso","otro"].forEach(function(k){
+    ["muro","techo","fachada","piso","otro","nose"].forEach(function(k){
       if(d.donde.indexOf(k) >= 0) medias.push("Hay grietas en " + NOMBRE_LUGAR[k] + ".");
     });
     if(d.sismo === "si") medias.push("Las grietas aparecieron después de un sismo.");
@@ -566,16 +687,16 @@ var TEXTOS = {
     resumen:"Con la información suministrada no aparecen señales de daño. Esto no significa que la vivienda cumpla la NSR‑10 ni que sea segura ante un sismo fuerte: solo que hoy no se ven señales visibles.",
     recomendaciones:[
       "Revisa cada cierto tiempo muros, columnas, techo y fachada, sobre todo después de un temblor o de un aguacero fuerte.",
-      "Si en algún momento aparece una grieta, tómale foto con algo al lado que dé la escala y vuelve a hacer esta revisión.",
+      "Si en algún momento aparece una grieta, tómale una foto desde un lugar seguro y vuelve a hacer esta revisión.",
       "Antes de agregar un piso o un cuarto, consulta con un ingeniero: ampliar sin diseño es una de las causas más comunes de colapso en laderas.",
       "Ten claro con tu familia por dónde salir y dónde encontrarse si hay un sismo."
     ]},
   ambar:{
     titulo:"Hay señales que deberían ser revisadas por un profesional",
-    resumen:"Lo que describes no indica necesariamente un peligro inmediato, pero sí merece que alguien con formación técnica lo mire de cerca. Una grieta puede ser solo del revoque o puede ser el aviso de algo más.",
+    resumen:"Lo que describes no indica necesariamente un peligro inmediato, pero sí merece que alguien con formación técnica lo mire de cerca. Una grieta puede ser solo del pañete (la capa de mezcla que cubre la pared) o puede ser el aviso de algo más.",
     recomendaciones:[
       "Busca la revisión de un ingeniero civil o estructural, o pide orientación en tu junta de acción comunal o en el DAGRD.",
-      "Marca con lápiz los extremos de cada grieta y ponles la fecha. Si en unas semanas creció, ya es otro asunto.",
+      "Si puedes hacerlo desde un lugar seguro, toma una foto de la grieta cada cierto tiempo para ver si cambia. No te acerques a partes flojas ni intentes medirla.",
       "No cargues más la vivienda: nada de materiales, tanques o pisos nuevos mientras no la revisen.",
       "Si hay filtraciones de agua, repáralas cuanto antes: el agua infiltrada debilita el terreno bajo la casa.",
       "Guarda este reporte y las fotos para mostrárselos a quien venga a revisar."
@@ -585,10 +706,10 @@ var TEXTOS = {
     resumen:"Algunas de las señales que describes son de las que comprometen lo que sostiene la vivienda. No es un diagnóstico, pero sí razón suficiente para priorizar la seguridad de quienes viven ahí y buscar evaluación profesional pronto.",
     recomendaciones:[
       "Si sientes peligro inmediato, sal del lugar y llama al 123.",
-      "Mientras tanto, no uses ni duermas en las zonas afectadas y aléjate de fachadas, antepechos y techos que puedan desprenderse.",
+      "Mientras tanto, no uses ni duermas en las zonas afectadas y aléjate de fachadas (las paredes que dan a la calle), antepechos (los muros bajos de balcones y terrazas) y techos que puedan desprenderse.",
       "Reporta el caso al DAGRD o a la autoridad local para pedir visita técnica.",
       "No hagas reparaciones por encima (tapar la grieta con cemento o pintura) antes de que un profesional la vea: eso esconde el problema.",
-      "Saca de las zonas afectadas lo pesado que puedas mover y ten lista una ruta de salida."
+      "Ten lista una ruta de salida para tu familia y acuerden dónde encontrarse."
     ]}
 };
 
@@ -599,6 +720,7 @@ var ORDEN = ["p1","p2","p3","p4","p5"];
 var fotos = [];
 var ultimaEvaluacion = null;
 var datosActuales = null;
+var pantallaActual = "inicio", volverA = "inicio", scrollGuardado = 0;
 
 function ir(id){
   document.querySelectorAll(".pantalla").forEach(function(s){ s.classList.remove("activa"); });
@@ -608,6 +730,8 @@ function ir(id){
   var nota = document.getElementById("paso-nota");
   document.getElementById("barra").style.width = (i >= 0 ? ((i+1)/ORDEN.length*100) : (id === "final" ? 100 : 0)) + "%";
   nota.textContent = i >= 0 ? ("Paso " + (i+1) + " de " + ORDEN.length) : "";
+  document.getElementById("fila-paso").hidden = !(i >= 0);
+  pantallaActual = id;
   window.scrollTo({top:0, behavior:"instant"});
   if(id === "p4") mostrarResultado();
   if(id === "p5") mostrarResumen();
@@ -660,11 +784,14 @@ function recoger(){
   var barrio = selB.value.indexOf("Otro") === 0
     ? (document.getElementById("barrio-otro").value.trim() || "Sin especificar")
     : selB.value;
+  var donde = marcados("donde");
+  if (val("grietas") === "si" && donde.length === 0) donde = ["nose"];
+  var ubic = document.getElementById("ubicacion-exacta");
   return {
     antes84: val("antes84"), profesional: val("profesional"),
     comuna: selC.value, barrio: barrio,
     material: val("material"), anio: document.getElementById("anio").value.trim(),
-    grietas: val("grietas"), donde: marcados("donde"), recientes: val("recientes"),
+    grietas: val("grietas"), donde: donde, ubicacionExacta: ubic ? ubic.value.trim().slice(0,200) : "", recientes: val("recientes"),
     aumentan: val("aumentan"), sismo: val("sismo"), inclinado: val("inclinado"),
     desprende: val("desprende"), ampliada: val("ampliada"), agua: val("agua"),
     fotos: fotos.length
@@ -672,7 +799,7 @@ function recoger(){
 }
 
 /* ---------- paso 3: fotos ---------- */
-var ELEMENTOS = ["Muro","Columna","Viga","Techo o losa","Fachada","Piso","Base o cimentación","Vista general","Otro"];
+var ELEMENTOS = [["Muro","Pared o muro"],["Columna","Columna"],["Viga","Viga"],["Techo o losa","Techo o cubierta"],["Fachada","Fachada"],["Piso","Piso"],["Base o cimentación","Base o cimientos"],["Vista general","Vista general"],["Otro","Otra parte o no sé cómo se llama"]];
 document.getElementById("entrada-fotos").addEventListener("change", function(ev){
   var nuevos = Array.prototype.slice.call(ev.target.files || []);
   for(var i=0; i<nuevos.length && fotos.length<6; i++){
@@ -694,7 +821,7 @@ function pintarFotos(){
     var t = document.createElement("label"); t.className = "campo"; t.style.fontSize = ".95rem";
     t.textContent = "¿Qué aparece en esta foto?";
     var sel = document.createElement("select");
-    ELEMENTOS.forEach(function(e){ var o = document.createElement("option"); o.value = e; o.textContent = e; sel.appendChild(o); });
+    ELEMENTOS.forEach(function(e){ var o = document.createElement("option"); o.value = e[0]; o.textContent = e[1]; sel.appendChild(o); });
     sel.value = f.elemento;
     sel.addEventListener("change", function(){ f.elemento = sel.value; });
     var quitar = document.createElement("button");
@@ -719,11 +846,11 @@ function mostrarResultado(){
   var t = TEXTOS[r.nivel];
 
   var senales = "";
-  r.altas.forEach(function(s){ senales += '<li><span class="pt alta"></span><span>'+esc(s)+'</span></li>'; });
-  r.medias.forEach(function(s){ senales += '<li><span class="pt media"></span><span>'+esc(s)+'</span></li>'; });
+  r.altas.forEach(function(s){ senales += '<li><span class="pt alta"></span><span><span class="sr">Señal potencialmente grave: </span>'+esc(s)+'</span></li>'; });
+  r.medias.forEach(function(s){ senales += '<li><span class="pt media"></span><span><span class="sr">Señal para revisar: </span>'+esc(s)+'</span></li>'; });
   if(!senales) senales = '<li><span class="pt ctx"></span><span>No marcaste señales de daño.</span></li>';
 
-  var ctx = r.contexto.map(function(s){ return '<li><span class="pt ctx"></span><span>'+esc(s)+'</span></li>'; }).join("");
+  var ctx = r.contexto.map(function(s){ return '<li><span class="pt ctx"></span><span><span class="sr">Dato de contexto: </span>'+esc(s)+'</span></li>'; }).join("");
   var recs = t.recomendaciones.map(function(s){ return "<li><span>"+esc(s)+"</span></li>"; }).join("");
 
   var urgente = r.nivel === "rojo"
@@ -766,6 +893,7 @@ function mostrarResumen(){
     ["Filtraciones de agua", SI_NO[d.agua]],
     ["Fotografías adjuntas", String(d.fotos)]
   ];
+  if (d.ubicacionExacta) filas.splice(7, 0, ["Dónde está exactamente", d.ubicacionExacta]);
   document.getElementById("resumen").innerHTML = "<dl>" + filas.map(function(f){
     return "<div><dt>"+esc(f[0])+"</dt><dd>"+esc(f[1])+"</dd></div>";
   }).join("") + "</dl>";
@@ -797,6 +925,7 @@ document.getElementById("guardar").addEventListener("click", async function(){
       participacion_profesional: d.profesional,
       grietas: d.grietas,
       ubicacion_grietas: d.donde,
+      ubicacion_exacta: d.ubicacionExacta || null,
       grietas_recientes: d.recientes,
       grietas_aumentan: d.aumentan,
       grietas_despues_sismo: d.sismo,
@@ -938,6 +1067,344 @@ function pintarMapa(items){
     n ? (n === 1 ? "1 reporte registrado en el prototipo." : n + " reportes registrados en el prototipo.") : "";
 }
 
+/* ============================================================
+   AYUDA Y GLOSARIO  (contenido estático: no usa Supabase)
+   ============================================================ */
+var CATEGORIAS = [
+  {id:"partes", titulo:"Partes de la vivienda"},
+  {id:"senales", titulo:"Señales que puedes observar"},
+  {id:"palabras", titulo:"Palabras usadas en la página"}
+];
+var GLOSARIO = [
+  /* ---- Partes de la vivienda ---- */
+  {id:"antepecho", cat:"partes", term:"Antepecho", alias:["barandilla","baranda"],
+   def:"Es un muro bajo en el borde de un balcón, una terraza o una ventana.",
+   ej:"Por ejemplo, el muro bajo de ladrillo que rodea una terraza."},
+  {id:"cimentacion", cat:"partes", term:"Cimentación o cimientos", alias:["cimientos","cimentacion","base","base de la casa"],
+   def:"Es la parte de la construcción que está debajo de la vivienda y ayuda a transmitir su peso al terreno. Normalmente no se ve.",
+   ej:"Es la base sobre la que se apoya toda la casa; por eso casi nunca se alcanza a ver.",
+   cuid:"No excaves ni te acerques a una zona inestable para revisarla."},
+  {id:"columna", cat:"partes", term:"Columna", alias:["pilar"],
+   def:"Es una pieza que suele ser vertical y ayuda a sostener partes de la construcción. Puede ser cuadrada, rectangular o redonda.",
+   ej:"Por ejemplo, una pieza gruesa que sube desde el piso hasta el techo, en una esquina o dentro de una pared.",
+   cuid:"No toda parte vertical que sobresale es necesariamente una columna estructural, es decir, una que ayuda a sostener la casa."},
+  {id:"fachada", cat:"partes", term:"Fachada", alias:["frente"],
+   def:"Es la parte de afuera de la casa: la pared que da a la calle.",
+   ej:"Por ejemplo, la pared con la puerta principal y las ventanas que se ven desde la calle."},
+  {id:"mamposteria", cat:"partes", term:"Mampostería", alias:["ladrillo","bloque","mortero","pared de ladrillo"],
+   def:"Es una forma de construir paredes usando piezas como ladrillos o bloques, unidas con una mezcla llamada mortero.",
+   ej:"Una pared hecha de ladrillos pegados con mezcla es un ejemplo de mampostería.",
+   cuid:"En el formulario decimos «pared de ladrillo o bloque»."},
+  {id:"muro-carga", cat:"partes", term:"Muro de carga", alias:["pared de carga","muro estructural"],
+   def:"Es una pared diseñada para ayudar a sostener el peso de partes de la construcción, como pisos o techo, y transmitirlo hacia la base de la vivienda.",
+   ej:"Por ejemplo, una pared sobre la que se apoya el piso del segundo nivel.",
+   cuid:"No tienes que saber si una pared es de carga: reconocerlo requiere una revisión técnica."},
+  {id:"paniete", cat:"partes", term:"Pañete o revoque", alias:["paniete","revoque"],
+   def:"Es la capa de mezcla que se pone sobre una pared para cubrirla y dejar una superficie más pareja, antes de pintarla o terminarla.",
+   ej:"Es la capa lisa que se ve sobre el ladrillo antes de pintar.",
+   cuid:"Una grieta en el pañete no demuestra por sí sola que la pared que está detrás esté afectada."},
+  {id:"pared", cat:"partes", term:"Pared o muro", alias:["pared","muro"],
+   def:"Es una parte vertical de la vivienda que separa espacios o cierra la casa. Puede estar hecha de ladrillos, bloques, concreto u otros materiales.",
+   ej:"Por ejemplo, la pared que separa la sala de la cocina, o la que da a la calle.",
+   cuid:"No todas las paredes sostienen el peso de la vivienda. No tienes que intentar decidirlo."},
+  {id:"piso", cat:"partes", term:"Piso", alias:["suelo"],
+   def:"Es la superficie por donde caminamos dentro de la vivienda. Puede tener baldosa, cemento, madera u otro acabado.",
+   ej:"Por ejemplo, el piso de la sala o de la cocina.",
+   cuid:"Si ves una parte hundida o levantada, descríbela sin intentar medirla ni repararla."},
+  {id:"placa", cat:"partes", term:"Placa o losa", alias:["placa","losa","entrepiso"],
+   def:"Es una parte plana y resistente de la construcción que forma, por ejemplo, el piso de un nivel o el techo de un espacio. En Colombia muchas personas la llaman «placa».",
+   ej:"Por ejemplo, la superficie de concreto que separa el primer piso del segundo.",
+   cuid:"Una placa de concreto no es lo mismo que un cielo raso o una cubierta liviana."},
+  {id:"techo", cat:"partes", term:"Techo o cubierta", alias:["techo","cubierta","teja","tejado"],
+   def:"Es la parte superior que protege la vivienda del sol y la lluvia. Puede estar hecha de tejas, láminas u otros materiales, o ser una placa.",
+   ej:"Por ejemplo, un techo de tejas o de láminas; también la placa de concreto que hace de techo."},
+  {id:"viga", cat:"partes", term:"Viga", alias:[],
+   def:"Es una pieza que suele estar en posición horizontal y ayuda a sostener un techo o un piso. Puede apoyarse en columnas o muros.",
+   ej:"Puede parecer una franja más gruesa que cruza una habitación cerca del techo.",
+   cuid:"No todas las franjas o salientes que se ven en un techo son vigas."},
+
+  /* ---- Señales que puedes observar ---- */
+  {id:"cambio", cat:"senales", term:"Cambio reciente", alias:["cambio","aumento","empeoro"],
+   def:"Es una señal que apareció hace poco o que parece haber aumentado, extendido o empeorado con el tiempo.",
+   ej:"Por ejemplo, una grieta que antes no estaba, o que se ve más larga que hace unas semanas.",
+   cuid:"Para contarlo basta con decir desde cuándo lo notas y si ha cambiado; no necesitas una fecha exacta."},
+  {id:"deformacion", cat:"senales", term:"Deformación", alias:["doblado","abombado","combado"],
+   def:"Es un cambio visible en la forma de una parte de la vivienda, por ejemplo cuando algo se ve doblado, abombado o fuera de su forma habitual.",
+   ej:"Por ejemplo, un techo que se ve abombado o un marco de puerta que se ve doblado.",
+   cuid:"Tú solo describe lo que ves: Plomada no diagnostica la causa."},
+  {id:"desnivel", cat:"senales", term:"Desnivel", alias:["diferencia de altura"],
+   def:"Es una diferencia de altura entre dos partes de una superficie, por ejemplo cuando un piso parece tener una zona más alta o más baja.",
+   ej:"Por ejemplo, un piso con una zona que queda más alta que la de al lado.",
+   cuid:"Puede tener distintas causas; aquí solo registramos lo que observas."},
+  {id:"desprendimiento", cat:"senales", term:"Desprendimiento", alias:["se cae","caida de material","se suelta"],
+   def:"Ocurre cuando una parte del material se suelta o cae, por ejemplo pintura, pañete, ladrillo, concreto o una pieza del techo.",
+   ej:"Por ejemplo, pedazos de pañete en el suelo o un trozo de techo que se soltó.",
+   cuid:"No toques ni intentes retirar material que esté flojo. Toma fotografías solo desde un lugar seguro."},
+  {id:"grieta", cat:"senales", term:"Grieta o fisura", alias:["grieta","fisura","rajadura","rajado"],
+   def:"Es una línea o abertura que aparece en una pared, techo, piso u otra parte. Puede ser delgada o más ancha.",
+   ej:"Por ejemplo, una línea que sale en diagonal desde la esquina de una ventana.",
+   cuid:"Por su aspecto o su ancho no se puede saber si es grave. Lo útil es contar dónde está, cuándo apareció y si ha cambiado."},
+  {id:"humedad", cat:"senales", term:"Humedad o filtración", alias:["humedad","filtracion","goteo","moho","mancha de agua"],
+   def:"Es la presencia de agua o humedad donde normalmente debería estar seco. Puede verse como manchas, pintura levantada, moho o goteo.",
+   ej:"Por ejemplo, una mancha oscura en el techo después de la lluvia.",
+   cuid:"Una fotografía no siempre muestra de dónde viene el agua ni qué daño ha causado."},
+  {id:"hundimiento", cat:"senales", term:"Hundimiento", alias:["hundido"],
+   def:"Es cuando una parte del piso, del terreno o de la construcción parece estar más baja que antes o que las zonas que la rodean.",
+   ej:"Por ejemplo, una zona del piso que quedó más baja que el resto.",
+   cuid:"Una superficie irregular no siempre significa que haya un hundimiento. Cuenta qué cambió y desde cuándo."},
+  {id:"inclinacion", cat:"senales", term:"Inclinación", alias:["inclinado","ladeado","torcido"],
+   def:"Es cuando una pared, columna u otra parte parece estar inclinada hacia un lado en vez de mantenerse como normalmente debería.",
+   ej:"Por ejemplo, una pared que se ve ladeada al mirarla desde una esquina de la habitación.",
+   cuid:"No te acerques, no te subas a nada ni uses herramientas para medirla."},
+  {id:"oxido", cat:"senales", term:"Óxido o corrosión", alias:["oxido","corrosion","oxidado"],
+   def:"Es el deterioro que puede aparecer en piezas metálicas. En algunos casos se ve como manchas rojizas o cafés, escamas o metal deteriorado.",
+   ej:"Por ejemplo, manchas café-rojizas en una reja, una puerta metálica o un tubo.",
+   cuid:"No raspes, golpees ni manipules piezas metálicas expuestas."},
+  {id:"separacion", cat:"senales", term:"Separación", alias:["espacio","abertura"],
+   def:"Es un espacio que aparece entre dos partes que antes parecían unidas, por ejemplo entre una pared y el techo, o entre una pared y otra.",
+   ej:"Por ejemplo, un espacio que se abrió entre una pared y el techo.",
+   cuid:"No metas objetos en el espacio ni intentes abrirlo para medirlo."},
+
+  /* ---- Palabras usadas en la página ---- */
+  {id:"bahareque", cat:"palabras", term:"Bahareque", alias:["guadua y barro"],
+   def:"Es una forma de construir paredes con un entramado de guadua o madera, cubierto con barro o cemento.",
+   ej:"Por ejemplo, una casa tradicional de paredes de barro sobre un armazón de guadua."},
+  {id:"concreto", cat:"palabras", term:"Concreto", alias:["cemento","hormigon"],
+   def:"Es una mezcla dura de cemento, arena y piedra que se usa para columnas, vigas, placas y otras partes de una construcción.",
+   ej:"Por ejemplo, la placa que hace de techo en muchas casas."},
+  {id:"dagrd", cat:"palabras", term:"DAGRD", alias:["gestion del riesgo"],
+   def:"Es el Departamento Administrativo de Gestión del Riesgo de Desastres de Medellín."},
+  {id:"estructural", cat:"palabras", term:"Elemento estructural", alias:["estructural"],
+   def:"Es una parte que participa en el soporte de la construcción y ayuda a mantenerla en pie. Algunos ejemplos pueden ser columnas, vigas, cimientos, placas y ciertos muros.",
+   cuid:"No todos los muros son estructurales. La función real de cada parte debe ser revisada por personal técnico."},
+  {id:"no-estructural", cat:"palabras", term:"Elemento no estructural", alias:["no estructural"],
+   def:"Es una parte que no está destinada a soportar el peso principal de la construcción, como algunos acabados, divisiones livianas, ventanas o puertas.",
+   cuid:"Que algo sea no estructural no significa que no pueda causar lesiones si se desprende o cae."},
+  {id:"guadua", cat:"palabras", term:"Guadua", alias:["bambu"],
+   def:"Es un bambú grueso que se usa como material de construcción."},
+  {id:"nsr", cat:"palabras", term:"NSR-10", alias:["nsr","nsr10","reglamento","norma"],
+   def:"Es el Reglamento Colombiano de Construcción Sismo Resistente. Dice cómo deben diseñarse y construirse las casas y edificios para que resistan temblores.",
+   cuid:"Esta página no certifica que una vivienda cumpla la NSR-10."},
+  {id:"reporte", cat:"palabras", term:"Reporte", alias:["reportar"],
+   def:"Es la información que una persona registra para contar qué señal observa, dónde está y, si puede, adjuntar una fotografía.",
+   cuid:"Enviar un reporte no significa que ya se haya realizado una inspección ni que se haya confirmado un daño."},
+  {id:"revision", cat:"palabras", term:"Revisión técnica", alias:["revision","visita tecnica","ingeniero"],
+   def:"Es una evaluación realizada por una persona con formación y competencia en el tema, que puede observar la vivienda y analizar la información necesaria.",
+   cuid:"Una fotografía enviada a la página no equivale a una visita técnica."},
+  {id:"sismorresistente", cat:"palabras", term:"Sismorresistente", alias:["sismo resistente","temblor","sismo"],
+   def:"Que está diseñado y construido para resistir los temblores."}
+];
+
+function normalizar(t){
+  return String(t || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
+}
+function entradaGlosario(id){
+  for (var i = 0; i < GLOSARIO.length; i++) if (GLOSARIO[i].id === id) return GLOSARIO[i];
+  return null;
+}
+function parrafo(clase, texto, prefijo){
+  var p = document.createElement("p");
+  if (clase) p.className = clase;
+  if (prefijo) { var b = document.createElement("b"); b.textContent = prefijo; p.appendChild(b); }
+  p.appendChild(document.createTextNode(texto));
+  return p;
+}
+
+function dibujarGlosario(){
+  var cont = document.getElementById("glosario-contenido");
+  var nav = document.getElementById("cats-nav");
+  cont.innerHTML = ""; nav.innerHTML = "";
+  CATEGORIAS.forEach(function(c){
+    var chip = document.createElement("button");
+    chip.type = "button"; chip.textContent = c.titulo; chip.setAttribute("data-cat-ir", c.id);
+    nav.appendChild(chip);
+
+    var sec = document.createElement("section");
+    sec.className = "gl-cat"; sec.id = "cat-" + c.id;
+    var h = document.createElement("h3"); h.textContent = c.titulo; sec.appendChild(h);
+
+    GLOSARIO.filter(function(g){ return g.cat === c.id; })
+      .sort(function(a, b){ return a.term.localeCompare(b.term, "es"); })
+      .forEach(function(g){
+        var art = document.createElement("article");
+        art.className = "gl-item"; art.id = "g-" + g.id; art.tabIndex = -1;
+        art.setAttribute("data-id", g.id);
+        var h4 = document.createElement("h4"); h4.textContent = g.term; art.appendChild(h4);
+        art.appendChild(parrafo("", g.def));
+        if (g.ej) art.appendChild(parrafo("ej", g.ej, "Ejemplo: "));
+        if (g.cuid) art.appendChild(parrafo("cuid", g.cuid, "Ten en cuenta: "));
+        sec.appendChild(art);
+      });
+
+    var arriba = document.createElement("button");
+    arriba.type = "button"; arriba.className = "btn-que";
+    arriba.setAttribute("data-gl-inicio", "1");
+    arriba.textContent = "Volver al inicio del glosario ↑";
+    sec.appendChild(arriba);
+    cont.appendChild(sec);
+  });
+}
+
+function filtrarGlosario(){
+  var q = normalizar(document.getElementById("buscador").value);
+  var porTermino = {}, porTexto = {}, hayTermino = false;
+  GLOSARIO.forEach(function(g){
+    var campos = [g.term].concat(g.alias || []).map(normalizar);
+    porTermino[g.id] = !!q && campos.some(function(c){ return c.indexOf(q) >= 0; });
+    porTexto[g.id] = !!q && normalizar(g.def + " " + (g.ej || "")).indexOf(q) >= 0;
+    if (porTermino[g.id]) hayTermino = true;
+  });
+  var visibles = 0;
+  document.querySelectorAll("#glosario-contenido .gl-item").forEach(function(el){
+    var id = el.getAttribute("data-id");
+    var ok = !q || (hayTermino ? porTermino[id] : porTexto[id]);
+    el.hidden = !ok;
+    if (ok) visibles++;
+  });
+  document.querySelectorAll("#glosario-contenido .gl-cat").forEach(function(sec){
+    sec.hidden = !sec.querySelector(".gl-item:not([hidden])");
+  });
+  document.getElementById("cats-nav").hidden = !!q;
+  document.getElementById("estado-busqueda").textContent = !q ? "" :
+    (visibles === 0 ? "No encontramos esa palabra. Prueba con otra, por ejemplo: viga, grieta o humedad."
+     : (visibles === 1 ? "Se encontró 1 palabra." : "Se encontraron " + visibles + " palabras."));
+}
+
+function mostrarSoloPantalla(id){
+  document.querySelectorAll(".pantalla").forEach(function(s){ s.classList.remove("activa"); });
+  var el = document.getElementById("p-" + id);
+  if (el) el.classList.add("activa");
+  pantallaActual = id;
+}
+function abrirAyuda(termino){
+  if (pantallaActual !== "ayuda") { volverA = pantallaActual; scrollGuardado = window.scrollY; }
+  mostrarSoloPantalla("ayuda");
+  var buscador = document.getElementById("buscador");
+  if (termino || buscador.value) { buscador.value = ""; filtrarGlosario(); }
+  var el = termino ? document.getElementById("g-" + termino) : null;
+  if (el) {
+    el.scrollIntoView({block:"start"});
+    el.classList.add("resaltado");
+    el.focus({preventScroll:true});
+    setTimeout(function(){ el.classList.remove("resaltado"); }, 2500);
+  } else {
+    window.scrollTo(0, 0);
+    document.getElementById("ayuda-titulo").focus({preventScroll:true});
+  }
+}
+function cerrarAyuda(){
+  mostrarSoloPantalla(volverA || "inicio");
+  window.scrollTo(0, scrollGuardado);
+}
+
+/* ---------- ayuda junto al formulario ---------- */
+function alternarAyudaCtx(btn){
+  var id = btn.getAttribute("data-ayuda");
+  var panel = document.getElementById("ctx-" + id);
+  var abrir = panel.hidden;
+  if (abrir && !panel.firstChild) {
+    var g = entradaGlosario(id);
+    if (!g) return;
+    var t = document.createElement("span"); t.className = "t"; t.textContent = g.term; panel.appendChild(t);
+    panel.appendChild(parrafo("", g.def));
+    if (g.ej) panel.appendChild(parrafo("", g.ej, "Ejemplo: "));
+    panel.appendChild(parrafo("", "No tienes que identificarlo: puedes marcar «No sé cómo se llama esa parte» y contarnos dónde está la señal."));
+    var ver = document.createElement("button");
+    ver.type = "button"; ver.className = "btn-que"; ver.setAttribute("data-glosario", id);
+    ver.textContent = "Ver en el glosario";
+    panel.appendChild(ver);
+  }
+  panel.hidden = !abrir;
+  btn.setAttribute("aria-expanded", abrir ? "true" : "false");
+}
+
+document.addEventListener("click", function(ev){
+  var t = ev.target.closest("[data-ayuda],[data-glosario],[data-gl-inicio],[data-cat-ir],[data-volver-ayuda]");
+  if (!t) return;
+  if (t.hasAttribute("data-ayuda")) { alternarAyudaCtx(t); return; }
+  if (t.hasAttribute("data-glosario")) { abrirAyuda(t.getAttribute("data-glosario")); return; }
+  if (t.hasAttribute("data-volver-ayuda")) { cerrarAyuda(); return; }
+  if (t.hasAttribute("data-gl-inicio")) {
+    window.scrollTo(0, 0);
+    document.getElementById("ayuda-titulo").focus({preventScroll:true});
+    return;
+  }
+  if (t.hasAttribute("data-cat-ir")) {
+    var sec = document.getElementById("cat-" + t.getAttribute("data-cat-ir"));
+    if (sec) sec.scrollIntoView({block:"start"});
+  }
+});
+document.getElementById("abrir-ayuda").addEventListener("click", function(){ abrirAyuda(); });
+document.getElementById("buscador").addEventListener("input", filtrarGlosario);
+dibujarGlosario();
+
+/* ============================================================
+   ENCUESTA DE SATISFACCIÓN
+   (tabla nueva: encuesta_satisfaccion; ver crear_tabla_encuesta.sql)
+   ============================================================ */
+var ETQ_CONF = ["", "Nada conforme", "Poco conforme", "Más o menos conforme", "Conforme", "Muy conforme"];
+var ETQ_REC = ["", "No la recomendaría", "Probablemente no la recomendaría", "No estoy seguro/a", "Probablemente la recomendaría", "La recomendaría totalmente"];
+
+function pintarEstrellas(nombre, textoId, etiquetas){
+  var v = Number(val(nombre) || 0);
+  document.querySelectorAll('input[name="' + nombre + '"]').forEach(function(r){
+    var lab = r.closest(".estrella");
+    var llena = Number(r.value) <= v;
+    lab.classList.toggle("llena", llena);
+    lab.querySelector(".glifo").textContent = llena ? "★" : "☆";
+  });
+  document.getElementById(textoId).textContent = v ? ("Elegiste " + v + " de 5: " + etiquetas[v]) : "";
+}
+document.querySelectorAll('input[name="enc_conformidad"]').forEach(function(r){
+  r.addEventListener("change", function(){ pintarEstrellas("enc_conformidad", "txt-conformidad", ETQ_CONF); });
+});
+document.querySelectorAll('input[name="enc_recomendaria"]').forEach(function(r){
+  r.addEventListener("change", function(){ pintarEstrellas("enc_recomendaria", "txt-recomendaria", ETQ_REC); });
+});
+
+document.getElementById("enc-enviar").addEventListener("click", async function(){
+  var boton = this;
+  var est = document.getElementById("enc-estado");
+  var c = Number(val("enc_conformidad")), r = Number(val("enc_recomendaria"));
+  if (!c || !r) { est.textContent = "Elige de 1 a 5 estrellas en las dos primeras preguntas."; return; }
+  var comentario = document.getElementById("enc-comentario").value.trim().slice(0, 1000);
+  boton.disabled = true;
+  est.textContent = "Enviando…";
+  try {
+    var res = await plomadaSupabase.from("encuesta_satisfaccion").insert({
+      conformidad: c, recomendaria: r, comentario: comentario || null
+    });
+    if (res.error) throw res.error;
+    est.textContent = "";
+    document.getElementById("enc-form").hidden = true;
+    var gracias = document.getElementById("enc-gracias");
+    gracias.hidden = false;
+    gracias.focus();
+  } catch (error) {
+    console.error("Error al guardar la encuesta:", error);
+    est.textContent = "No se pudo enviar tu opinión ahora. Puedes intentarlo de nuevo en un momento.";
+  } finally {
+    boton.disabled = false;
+  }
+});
+
+function reiniciarExtras(){
+  var u = document.getElementById("ubicacion-exacta"); if (u) u.value = "";
+  document.querySelectorAll(".ayuda-ctx").forEach(function(p){ p.hidden = true; });
+  document.querySelectorAll("[data-ayuda]").forEach(function(b){ b.setAttribute("aria-expanded", "false"); });
+  ["enc_conformidad", "enc_recomendaria"].forEach(function(n){
+    document.querySelectorAll('input[name="' + n + '"]').forEach(function(r){ r.checked = false; });
+  });
+  pintarEstrellas("enc_conformidad", "txt-conformidad", ETQ_CONF);
+  pintarEstrellas("enc_recomendaria", "txt-recomendaria", ETQ_REC);
+  document.getElementById("enc-comentario").value = "";
+  document.getElementById("enc-estado").textContent = "";
+  document.getElementById("enc-form").hidden = false;
+  document.getElementById("enc-gracias").hidden = true;
+  document.getElementById("buscador").value = "";
+  filtrarGlosario();
+}
+
 /* ---------- reiniciar ---------- */
 function reiniciar(){
   fotos = []; pintarFotos();
@@ -951,6 +1418,7 @@ function reiniciar(){
     if(e) e.checked = true;
   });
   verDetalleGrietas();
+  reiniciarExtras();
 }
 
 ir("inicio");
